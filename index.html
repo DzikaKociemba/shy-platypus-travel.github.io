@@ -146,7 +146,7 @@
       margin-bottom: 0.4rem;
     }
 
-    /* Maps Container (OpenStreetMap) */
+    /* Maps Container */
     .map-box {
       background: var(--bg-surface);
       border-radius: var(--radius-lg);
@@ -487,7 +487,7 @@
       padding: 2rem;
     }
 
-    /* Country Tags Bar inside Modal */
+    /* Country Tags Bar */
     .country-tags-bar {
       display: flex;
       align-items: center;
@@ -723,13 +723,36 @@
       margin-top: 1rem;
     }
 
+    /* Itinerary Master GPX Bar */
+    .itin-master-gpx-bar {
+      background: #eff6ff;
+      border: 1px dashed #3b82f6;
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .itin-master-gpx-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      color: #1e40af;
+      font-weight: 700;
+    }
+
     /* Itinerary Builder */
     .itinerary-card {
       background: #ffffff;
       border: 2px solid #e2e8f0;
       border-radius: var(--radius-md);
       padding: 1.25rem;
-      margin-top: 1rem;
+      margin-top: 1.25rem;
     }
 
     .itinerary-card-header {
@@ -742,7 +765,7 @@
     }
 
     .itinerary-card-header h4 {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       color: #1e3a8a;
     }
 
@@ -1005,15 +1028,38 @@
       background: #fff;
       padding: 1.5rem;
       border-radius: var(--radius-md);
-      max-width: 500px;
+      max-width: 520px;
       width: 100%;
+    }
+
+    .upload-option-divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      margin: 0.85rem 0;
+    }
+
+    .upload-option-divider::before, .upload-option-divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .upload-option-divider:not(:empty)::before {
+      margin-right: .5em;
+    }
+
+    .upload-option-divider:not(:empty)::after {
+      margin-left: .5em;
     }
 
     .preset-photos {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0.5rem;
-      margin: 1rem 0;
+      margin: 0.75rem 0;
     }
 
     .preset-img {
@@ -1068,16 +1114,14 @@
     <!-- TAB 1: BACKPACKING SECTION -->
     <!-- ========================================== -->
     <div id="section-backpacking">
-      <!-- Backpacking Map Box -->
       <div class="map-box">
         <div class="map-box-header">
           <h2>📍 Backpacking Destinations Map</h2>
-          <span class="badge">OpenStreetMap • Live & Visible</span>
+          <span class="badge">OpenStreetMap</span>
         </div>
         <div id="map-backpacking" class="interactive-map"></div>
       </div>
 
-      <!-- Section Header -->
       <div class="section-header-row">
         <h2 class="section-title">
           <span>📁 Destinations</span>
@@ -1087,16 +1131,13 @@
         </button>
       </div>
 
-      <div class="cards-grid" id="backpacking-destinations-grid">
-        <!-- Rendered via JS -->
-      </div>
+      <div class="cards-grid" id="backpacking-destinations-grid"></div>
     </div>
 
     <!-- ========================================== -->
     <!-- TAB 2: BIKEPACKING SECTION -->
     <!-- ========================================== -->
     <div id="section-bikepacking" style="display: none;">
-      <!-- Bikepacking Map Box -->
       <div class="map-box">
         <div class="map-box-header">
           <h2>🚴‍♀️ Bikepacking Tours Map</h2>
@@ -1105,7 +1146,6 @@
         <div id="map-bikepacking" class="interactive-map"></div>
       </div>
 
-      <!-- Section Header -->
       <div class="section-header-row">
         <h2 class="section-title">
           <span>🚲 Destinations</span>
@@ -1115,9 +1155,7 @@
         </button>
       </div>
 
-      <div class="cards-grid" id="bikepacking-destinations-grid">
-        <!-- Rendered via JS -->
-      </div>
+      <div class="cards-grid" id="bikepacking-destinations-grid"></div>
     </div>
 
   </main>
@@ -1143,14 +1181,12 @@
 
       <div class="modal-content">
 
-        <!-- Country Tags with Multi-Country Addition -->
+        <!-- Country Tags Bar -->
         <div class="country-tags-bar">
           <div class="country-tags-label">
             <span>🌐 Countries:</span>
           </div>
-          <div class="country-tags-list" id="modal-country-tags">
-            <!-- Rendered via JS -->
-          </div>
+          <div class="country-tags-list" id="modal-country-tags"></div>
           <div class="add-country-box">
             <input type="text" id="new-country-tag-input" class="country-input-inline" placeholder="+ Add country..." onkeydown="if(event.key==='Enter') addCountryTag()" />
             <button class="btn-tag-add" onclick="addCountryTag()">Add</button>
@@ -1179,9 +1215,6 @@
             <h3>🗺️ Things to See & Personal Route</h3>
             <span style="font-size:0.8rem; color:#64748b;">Add stops to plot on map</span>
           </div>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">
-            Add cities, trailheads, or mountain stops. Adding places automatically marks them on the map and links them into a travel route.
-          </p>
 
           <div class="things-form">
             <input type="text" id="new-spot-input" class="app-input" placeholder="Type city or attraction name..." onkeydown="if(event.key==='Enter') addSpotToActiveFolder()" />
@@ -1194,19 +1227,14 @@
           <div id="folder-detail-map" class="country-map-panel"></div>
         </div>
 
-        <!-- 3. Day-by-Day Itinerary Builder with Dropdown Categories & GPX -->
+        <!-- 3. Day-by-Day Itinerary Builder with General & Day GPX -->
         <div class="folder-section">
           <div class="folder-section-header">
             <h3>📅 Itinerary & Day Planner</h3>
             <button class="btn-pink-action" style="padding:0.4rem 0.9rem; font-size:0.82rem;" onclick="addNewItineraryPrompt()">+ Add New Itinerary</button>
           </div>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">
-            Create custom itineraries, add days sequentially, select day categories, record distances, altitude, and time, and upload per-day .GPX tracks.
-          </p>
 
-          <div id="itineraries-container">
-            <!-- Rendered via JS -->
-          </div>
+          <div id="itineraries-container"></div>
         </div>
 
         <!-- 4. Notes & To-Do List Section -->
@@ -1215,7 +1243,6 @@
             <h3>📝 Trip Notes & To-Do List</h3>
           </div>
           <div class="notes-grid">
-            <!-- To-Do List Subpanel -->
             <div class="todo-subpanel">
               <h4>✅ To-Do Checklist</h4>
               <div class="todo-list" id="modal-todo-list"></div>
@@ -1225,7 +1252,6 @@
               </div>
             </div>
 
-            <!-- Notes Subpanel -->
             <div class="notes-subpanel">
               <h4>📌 Notes & Ideas</h4>
               <div class="saved-notes-list" id="modal-notes-list"></div>
@@ -1261,19 +1287,26 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- CHANGE COVER PHOTO MODAL -->
+  <!-- CHANGE COVER PHOTO MODAL (URL & COMPUTER UPLOAD) -->
   <!-- ========================================== -->
   <div class="modal-overlay" id="image-edit-modal">
     <div class="image-modal-box">
       <h3 style="color:#be123c; margin-bottom:0.5rem;">📷 Modify Destination Picture</h3>
-      <p style="font-size:0.88rem; color:#64748b; margin-bottom:1rem;">Paste any photo URL or select from verified landmark recommendations below:</p>
+      <p style="font-size:0.88rem; color:#64748b; margin-bottom:0.8rem;">Upload an image from your computer or paste any direct web image URL:</p>
 
-      <input type="text" id="custom-image-url-input" class="app-input" placeholder="Paste image URL here (https://...)" style="margin-bottom:1rem; width:100%;" />
+      <!-- Option A: Upload from Computer -->
+      <label class="gpx-file-btn" style="width:100%; padding:0.65rem; margin-bottom:0.4rem; cursor:pointer;">
+        <span>📁 Choose Photo from Computer</span>
+        <input type="file" id="local-cover-file-input" style="display:none;" accept="image/*" onchange="handleLocalCoverUpload(event)" />
+      </label>
 
-      <label style="font-size:0.8rem; font-weight:700; color:#475569;">Quick Preset Selection:</label>
-      <div class="preset-photos" id="preset-photos-container">
-        <!-- Filled dynamically based on active destination -->
-      </div>
+      <div class="upload-option-divider">OR PASTE URL</div>
+
+      <!-- Option B: Paste URL -->
+      <input type="text" id="custom-image-url-input" class="app-input" placeholder="Paste image link here (e.g. https://images.unsplash.com/...)" style="width:100%; margin-bottom:0.8rem;" />
+
+      <label style="font-size:0.8rem; font-weight:700; color:#475569;">Or pick a recommended landmark:</label>
+      <div class="preset-photos" id="preset-photos-container"></div>
 
       <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem;">
         <button class="btn-banner-action" onclick="closeImageEditModal()">Cancel</button>
@@ -1282,13 +1315,11 @@
     </div>
   </div>
 
-  <!-- Leaflet Maps Script (OpenStreetMap Engine) -->
+  <!-- Leaflet Maps Script -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script>
-    /* ==========================================================
-       1. CORE DATA STORE (WITH AUTHENTIC LANDMARKS & COUNTRY LISTS)
-       ========================================================== */
+    /* 1. CORE DATA STORE */
     const defaultBackpacking = {
       bhutan: {
         id: "bhutan",
@@ -1451,7 +1482,6 @@
       }
     };
 
-    /* Suggested verified photo presets */
     const photoPresets = {
       bhutan: [
         "https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1200&q=80",
@@ -1471,7 +1501,6 @@
       ]
     };
 
-    /* Common place coordinates for route plotting inside countries */
     const knownLocations = {
       "yerevan": [40.1792, 44.4991],
       "dilijan": [40.7410, 44.8638],
@@ -1507,7 +1536,6 @@
       "titisee": [47.9000, 8.1500]
     };
 
-    /* App State */
     let mapBackpacking = null;
     let mapBikepacking = null;
     let mapFolderDetail = null;
@@ -1517,30 +1545,27 @@
     let detailMapLine = null;
     let gpxLayers = [];
 
-    /* Load and Merge Storage */
     function getAllDestinations() {
-      const stored = localStorage.getItem("dorota_all_destinations_v4");
+      const stored = localStorage.getItem("dorota_all_destinations_v5");
       if (stored) {
         try {
           return JSON.parse(stored);
         } catch(e) {}
       }
       const initial = { ...defaultBackpacking, ...defaultBikepacking };
-      localStorage.setItem("dorota_all_destinations_v4", JSON.stringify(initial));
+      localStorage.setItem("dorota_all_destinations_v5", JSON.stringify(initial));
       return initial;
     }
 
     function saveAllDestinations(destObj) {
-      localStorage.setItem("dorota_all_destinations_v4", JSON.stringify(destObj));
+      localStorage.setItem("dorota_all_destinations_v5", JSON.stringify(destObj));
     }
 
-    /* Initialize Application */
     document.addEventListener("DOMContentLoaded", () => {
       renderAllCards();
       initBackpackingMap();
     });
 
-    /* Switch Sections */
     function switchSection(tab) {
       activeTabContext = tab;
       const btnBackpack = document.getElementById("btn-tab-backpacking");
@@ -1567,7 +1592,6 @@
       }
     }
 
-    /* Country Flag Helper */
     function getCountryEmoji(countryName) {
       const c = (countryName || "").toLowerCase().trim();
       if (c.includes("armenia")) return "🇦🇲";
@@ -1588,7 +1612,6 @@
       return "📍";
     }
 
-    /* Render Cards for Both Tabs */
     function renderAllCards() {
       const all = getAllDestinations();
       const bpGrid = document.getElementById("backpacking-destinations-grid");
@@ -1635,9 +1658,7 @@
       });
     }
 
-    /* ==========================================================
-       2. MAP INITIALIZATIONS (OPENSTREETMAP - FREE & NO API KEY)
-       ========================================================== */
+    /* 2. MAP INITIALIZATIONS */
     function initBackpackingMap() {
       if (mapBackpacking) return;
 
@@ -1699,9 +1720,7 @@
       });
     }
 
-    /* ==========================================================
-       3. FOLDER MODAL CONTROLS & CONTENT RENDERING
-       ========================================================== */
+    /* 3. FOLDER MODAL CONTROLS */
     function openFolderModal(destId) {
       activeFolderId = destId;
       const all = getAllDestinations();
@@ -1753,9 +1772,7 @@
       }
     }
 
-    /* ==========================================================
-       COUNTRY TAG MANAGEMENT (ADD & REMOVE COUNTRIES)
-       ========================================================== */
+    /* Country Tag Management */
     function renderCountryTags() {
       const container = document.getElementById("modal-country-tags");
       container.innerHTML = "";
@@ -1810,14 +1827,14 @@
       renderAllCards();
     }
 
-    /* ==========================================================
-       4. COVER PHOTO MODIFICATION FEATURE
-       ========================================================== */
+    /* 4. COVER PHOTO MODIFICATION (URL & LOCAL COMPUTER UPLOAD) */
     function openImageEditModal() {
       if (!activeFolderId) return;
       const dest = getAllDestinations()[activeFolderId];
       const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
-      document.getElementById("custom-image-url-input").value = currCover;
+      
+      const urlInput = document.getElementById("custom-image-url-input");
+      urlInput.value = currCover.startsWith("data:") ? "" : currCover;
 
       const presetBox = document.getElementById("preset-photos-container");
       presetBox.innerHTML = "";
@@ -1844,23 +1861,41 @@
       document.getElementById("image-edit-modal").classList.remove("active");
     }
 
+    function handleLocalCoverUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Img = e.target.result;
+        saveAndApplyCover(base64Img);
+      };
+      reader.readAsDataURL(file);
+    }
+
     function applyCustomCoverPhoto() {
-      if (!activeFolderId) return;
       const url = document.getElementById("custom-image-url-input").value.trim();
-      if (!url) return;
+      if (!url) {
+        alert("Please paste an image URL or choose a photo from your computer.");
+        return;
+      }
+      saveAndApplyCover(url);
+    }
 
-      localStorage.setItem(`dorota_cover_${activeFolderId}`, url);
-      document.getElementById("modal-img").src = url;
-
+    function saveAndApplyCover(imgSrc) {
+      if (!activeFolderId) return;
+      try {
+        localStorage.setItem(`dorota_cover_${activeFolderId}`, imgSrc);
+      } catch(e) {
+        console.warn("Storage quota warning for large image, updating memory only.", e);
+      }
+      document.getElementById("modal-img").src = imgSrc;
       const cardImg = document.getElementById(`card-cover-${activeFolderId}`);
-      if (cardImg) cardImg.src = url;
-
+      if (cardImg) cardImg.src = imgSrc;
       closeImageEditModal();
     }
 
-    /* ==========================================================
-       5. THINGS TO SEE & PERSONAL ROUTE BUILDER
-       ========================================================== */
+    /* 5. THINGS TO SEE & PERSONAL ROUTE BUILDER */
     function getStoredSpots(id) {
       const data = localStorage.getItem(`dorota_spots_${id}`);
       return data ? JSON.parse(data) : [];
@@ -1932,6 +1967,7 @@
       }
 
       refreshCountryMapRoute();
+      renderAllItinGpxOnMap();
     }
 
     function refreshCountryMapRoute() {
@@ -1987,9 +2023,7 @@
       }
     }
 
-    /* ==========================================================
-       6. ITINERARY BUILDER WITH METRICS, SUMMARY & GPX
-       ========================================================== */
+    /* 6. ITINERARY BUILDER WITH ITINERARY-LEVEL GPX & DAY METRICS */
     function getStoredItineraries(destId) {
       const data = localStorage.getItem(`dorota_itineraries_${destId}`);
       return data ? JSON.parse(data) : [];
@@ -2008,6 +2042,8 @@
       list.push({
         id: "itin_" + Date.now(),
         title: title,
+        masterGpxName: null,
+        masterGpxRaw: null,
         days: []
       });
       saveItineraries(activeFolderId, list);
@@ -2020,6 +2056,33 @@
       list.splice(itinIndex, 1);
       saveItineraries(activeFolderId, list);
       renderItinerariesList();
+      renderAllItinGpxOnMap();
+    }
+
+    function uploadMasterItineraryGpx(event, itinIdx) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const list = getStoredItineraries(activeFolderId);
+        list[itinIdx].masterGpxName = file.name;
+        list[itinIdx].masterGpxRaw = text;
+        saveItineraries(activeFolderId, list);
+        renderItinerariesList();
+        renderAllItinGpxOnMap();
+      };
+      reader.readAsText(file);
+    }
+
+    function removeMasterItineraryGpx(itinIdx) {
+      const list = getStoredItineraries(activeFolderId);
+      list[itinIdx].masterGpxName = null;
+      list[itinIdx].masterGpxRaw = null;
+      saveItineraries(activeFolderId, list);
+      renderItinerariesList();
+      renderAllItinGpxOnMap();
     }
 
     function onCategoryChange(itinIdx) {
@@ -2033,11 +2096,7 @@
       if (isBike) {
         metricsRow.style.display = "grid";
       } else {
-        if (catSelect.value === "Hike") {
-          metricsRow.style.display = "grid";
-        } else {
-          metricsRow.style.display = "none";
-        }
+        metricsRow.style.display = (catSelect.value === "Hike") ? "grid" : "none";
       }
     }
 
@@ -2099,13 +2158,12 @@
                 </div>
                 ${metricsPills ? `<div class="day-metrics-badges">${metricsPills}</div>` : ''}
                 ${day.notes ? `<div class="day-notes-box">📝 ${escapeHtml(day.notes)}</div>` : ''}
-                ${day.gpxFileName ? `<div class="day-gpx-badge">📍 GPX attached: ${escapeHtml(day.gpxFileName)}</div>` : ''}
+                ${day.gpxFileName ? `<div class="day-gpx-badge">📍 Day GPX: ${escapeHtml(day.gpxFileName)}</div>` : ''}
               </div>
             `;
           });
         }
 
-        // Summary calculation
         let summaryBannerHtml = "";
         if (hasMetrics) {
           const sumHours = Math.floor(totalMinutes / 60);
@@ -2141,11 +2199,30 @@
             <option value="Arrival/Departure">✈️ Arrival/Departure</option>
           `;
 
+        // Itinerary-level general GPX bar
+        const masterGpxHtml = `
+          <div class="itin-master-gpx-bar">
+            <div class="itin-master-gpx-left">
+              <span>🗺️ Itinerary Master GPX:</span>
+              ${itin.masterGpxName ? `<span class="day-gpx-badge" style="margin:0;">✅ ${escapeHtml(itin.masterGpxName)}</span>` : `<span style="font-size:0.8rem; font-weight:normal; color:#64748b;">No general GPX attached</span>`}
+            </div>
+            <div style="display:flex; gap:0.4rem; align-items:center;">
+              <label class="gpx-file-btn" style="padding:0.35rem 0.75rem; font-size:0.78rem;">
+                <span>${itin.masterGpxName ? 'Change GPX' : 'Upload Itinerary GPX'}</span>
+                <input type="file" style="display:none;" accept=".gpx" onchange="uploadMasterItineraryGpx(event, ${itinIdx})" />
+              </label>
+              ${itin.masterGpxName ? `<button class="btn-banner-action" style="padding:0.3rem 0.6rem; color:#dc2626;" onclick="removeMasterItineraryGpx(${itinIdx})">Remove</button>` : ''}
+            </div>
+          </div>
+        `;
+
         card.innerHTML = `
           <div class="itinerary-card-header">
             <h4>🗺️ ${escapeHtml(itin.title)}</h4>
             <button class="btn-del-item" onclick="deleteItinerary(${itinIdx})" title="Delete Itinerary">🗑️</button>
           </div>
+
+          ${masterGpxHtml}
 
           <div class="days-list">${daysHtml}</div>
 
@@ -2155,11 +2232,10 @@
           <div class="add-day-box">
             <h5 style="font-size:0.85rem; color:#be123c; margin-bottom:0.5rem;">+ Add Day ${itin.days.length + 1}</h5>
             <div class="day-form-grid">
-              <input type="text" id="day-title-${itinIdx}" class="app-input" placeholder="Title/route (e.g., Dilijan to Sevan)..." />
+              <input type="text" id="day-title-${itinIdx}" class="app-input" placeholder="Title/route (e.g., Stage 1)..." />
               <select id="day-cat-${itinIdx}" class="day-select" onchange="onCategoryChange(${itinIdx})">${categoryOptions}</select>
             </div>
 
-            <!-- Dynamic Metrics Row (Always visible for bikepacking, dynamic for hike in backpacking) -->
             <div class="metrics-input-row" id="metrics-row-${itinIdx}" style="display: ${isBike ? 'grid' : 'none'};">
               <div class="metric-field">
                 <label>Distance (km)</label>
@@ -2183,7 +2259,7 @@
 
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
               <label class="gpx-file-btn">
-                <span>📁 Attach .GPX Track</span>
+                <span>📁 Attach Day .GPX Track</span>
                 <input type="file" style="display:none;" accept=".gpx" onchange="attachDayGpx(event, ${itinIdx})" />
               </label>
               <button class="btn-pink-action" style="padding:0.45rem 1rem; font-size:0.82rem;" onclick="addDayToItin(${itinIdx})">+ Add This Day</button>
@@ -2248,12 +2324,9 @@
       list[itinIdx].days.push(newDay);
       saveItineraries(activeFolderId, list);
 
-      if (newDay.gpxRaw && mapFolderDetail) {
-        plotGpxOnDetailMap(newDay.gpxRaw);
-      }
-
       delete tempGpxData[itinIdx];
       renderItinerariesList();
+      renderAllItinGpxOnMap();
     }
 
     function deleteDay(itinIdx, dayIdx) {
@@ -2261,34 +2334,72 @@
       list[itinIdx].days.splice(dayIdx, 1);
       saveItineraries(activeFolderId, list);
       renderItinerariesList();
+      renderAllItinGpxOnMap();
     }
 
-    function plotGpxOnDetailMap(gpxText) {
+    function renderAllItinGpxOnMap() {
+      if (!mapFolderDetail || !activeFolderId) return;
+
+      gpxLayers.forEach(l => mapFolderDetail.removeLayer(l));
+      gpxLayers = [];
+
+      const list = getStoredItineraries(activeFolderId);
+      const allBounds = [];
+
+      list.forEach(itin => {
+        // 1. Plot Itinerary Master GPX
+        if (itin.masterGpxRaw) {
+          const coords = parseGpxCoords(itin.masterGpxRaw);
+          if (coords.length > 0) {
+            const line = L.polyline(coords, { color: '#2563eb', weight: 4.5, opacity: 0.9 }).addTo(mapFolderDetail);
+            gpxLayers.push(line);
+            allBounds.push(line.getBounds());
+          }
+        }
+
+        // 2. Plot Day-level GPX Tracks
+        if (itin.days) {
+          itin.days.forEach(day => {
+            if (day.gpxRaw) {
+              const coords = parseGpxCoords(day.gpxRaw);
+              if (coords.length > 0) {
+                const line = L.polyline(coords, { color: '#059669', weight: 3.5, dashArray: '4, 4' }).addTo(mapFolderDetail);
+                gpxLayers.push(line);
+                allBounds.push(line.getBounds());
+              }
+            }
+          });
+        }
+      });
+
+      if (allBounds.length > 0) {
+        let masterBounds = allBounds[0];
+        for (let i = 1; i < allBounds.length; i++) {
+          masterBounds = masterBounds.extend(allBounds[i]);
+        }
+        mapFolderDetail.fitBounds(masterBounds, { padding: [30, 30] });
+      }
+    }
+
+    function parseGpxCoords(gpxText) {
+      const coords = [];
       try {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(gpxText, "text/xml");
         const pts = xmlDoc.getElementsByTagName("trkpt");
-        const coords = [];
 
         for (let i = 0; i < pts.length; i++) {
           const lat = parseFloat(pts[i].getAttribute("lat"));
           const lon = parseFloat(pts[i].getAttribute("lon"));
           if (!isNaN(lat) && !isNaN(lon)) coords.push([lat, lon]);
         }
-
-        if (coords.length > 0) {
-          const line = L.polyline(coords, { color: '#2563eb', weight: 4 }).addTo(mapFolderDetail);
-          gpxLayers.push(line);
-          mapFolderDetail.fitBounds(line.getBounds(), { padding: [30, 30] });
-        }
       } catch(e) {
         console.error("GPX parse error", e);
       }
+      return coords;
     }
 
-    /* ==========================================================
-       7. NOTES & TO-DO CHECKLIST
-       ========================================================== */
+    /* 7. NOTES & TO-DO CHECKLIST */
     function getStoredTodos(destId) {
       const data = localStorage.getItem(`dorota_todos_${destId}`);
       return data ? JSON.parse(data) : [];
@@ -2346,7 +2457,6 @@
       renderTodoList();
     }
 
-    /* Freeform Notes */
     function getStoredNotes(destId) {
       const data = localStorage.getItem(`dorota_notes_${destId}`);
       return data ? JSON.parse(data) : [];
@@ -2400,9 +2510,7 @@
       renderNotesList();
     }
 
-    /* ==========================================================
-       8. ADD NEW DESTINATION MODAL
-       ========================================================== */
+    /* 8. ADD NEW DESTINATION MODAL */
     let destTabTarget = "backpacking";
 
     function openAddDestinationModal(tab) {
@@ -2458,11 +2566,10 @@
 
     function escapeHtml(str) {
       if (!str) return "";
-      const d = document.createElement("div");Website
+      const d = document.createElement("div");
       d.textContent = str;
       return d.innerHTML;
     }
   </script>
 </body>
 </html>
-
