@@ -1830,7 +1830,7 @@
     /* ==========================================================
        4. COVER PHOTO MODIFICATION FEATURE
        ========================================================== */
-    function handleCoverImageUpload(event) {
+  function handleCoverImageUpload(event) {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
 
@@ -1847,41 +1847,44 @@
 
   reader.readAsDataURL(file);
 }
-    function openImageEditModal() {
-      if (!activeFolderId) return;
-      const dest = getAllDestinations()[activeFolderId];
-      const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
-      document.getElementById("custom-image-url-input").value = currCover;
-      const selectedFileName = document.getElementById("selected-image-file-name");
-if (selectedFileName) {
-  selectedFileName.textContent = "";
+
+function openImageEditModal() {
+  if (!activeFolderId) return;
+
+  const dest = getAllDestinations()[activeFolderId];
+  const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
+  document.getElementById("custom-image-url-input").value = currCover;
+
+  const selectedFileName = document.getElementById("selected-image-file-name");
+  if (selectedFileName) {
+    selectedFileName.textContent = "";
+  }
+
+  const imageFileInput = document.getElementById("custom-image-file-input");
+  if (imageFileInput) {
+    imageFileInput.value = "";
+  }
+
+  const presetBox = document.getElementById("preset-photos-container");
+  presetBox.innerHTML = "";
+
+  const presets = photoPresets[activeFolderId] || [
+    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80"
+  ];
+
+  presets.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.className = "preset-img";
+    img.onclick = () => {
+      document.getElementById("custom-image-url-input").value = url;
+    };
+    presetBox.appendChild(img);
+  });
+
+  document.getElementById("image-edit-modal").classList.add("active");
 }
-
-const imageFileInput = document.getElementById("custom-image-file-input");
-if (imageFileInput) {
-  imageFileInput.value = "";
-}
-
-      const presetBox = document.getElementById("preset-photos-container");
-      presetBox.innerHTML = "";
-
-      const presets = photoPresets[activeFolderId] || [
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
-        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80"
-      ];
-
-      presets.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.className = "preset-img";
-        img.onclick = () => {
-          document.getElementById("custom-image-url-input").value = url;
-        };
-        presetBox.appendChild(img);
-      });
-
-      document.getElementById("image-edit-modal").classList.add("active");
-    }
 
     function closeImageEditModal() {
       document.getElementById("image-edit-modal").classList.remove("active");
@@ -2189,7 +2192,7 @@ if (imageFileInput) {
             <option value="Arrival/Departure">✈️ Arrival/Departure</option>
           `;
 
-        const generalGpxHtml = itin.gpxFileName
+ const generalGpxHtml = itin.gpxFileName
   ? `
     <div class="day-gpx-badge" style="margin: 0 0 1rem 0;">
       🗺️ General GPX attached: ${escapeHtml(itin.gpxFileName)}
@@ -2206,6 +2209,28 @@ card.innerHTML = `
       title="Delete Itinerary"
     >&times;</button>
   </div>
+
+  <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+    <label class="gpx-file-btn">
+      <span>📁 Attach General .GPX</span>
+      <input
+        type="file"
+        accept=".gpx,application/gpx+xml"
+        style="display:none;"
+        onchange="attachItineraryGpx(event, ${itinIdx})"
+      />
+    </label>
+  </div>
+
+  ${generalGpxHtml}
+
+  <div class="days-list">${daysHtml}</div>
+
+  ${summaryBannerHtml}
+
+  <!-- Add Day Box -->
+  <div class="add-day-box">
+    <h5 style="font-size:0.85rem; color:#be123c; margin-bottom:0.5rem;">+ Add Day ${itin.days.length + 1}</h5>
 
   <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
     <label class="gpx-file-btn">
