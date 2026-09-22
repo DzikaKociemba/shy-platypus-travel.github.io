@@ -1269,6 +1269,23 @@
       <p style="font-size:0.88rem; color:#64748b; margin-bottom:1rem;">Paste any photo URL or select from verified landmark recommendations below:</p>
 
       <input type="text" id="custom-image-url-input" class="app-input" placeholder="Paste image URL here (https://...)" style="margin-bottom:1rem; width:100%;" />
+      <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+  <label class="gpx-file-btn" style="cursor:pointer;">
+    📁 Choose image from computer
+    <input
+      id="custom-image-file-input"
+      type="file"
+      accept="image/*"
+      style="display:none;"
+      onchange="handleCoverImageUpload(event)"
+    />
+  </label>
+
+  <span
+    id="selected-image-file-name"
+    style="font-size:0.8rem; color:#64748b;"
+  ></span>
+</div>
 
       <label style="font-size:0.8rem; font-weight:700; color:#475569;">Quick Preset Selection:</label>
       <div class="preset-photos" id="preset-photos-container">
@@ -1813,11 +1830,37 @@
     /* ==========================================================
        4. COVER PHOTO MODIFICATION FEATURE
        ========================================================== */
+    function handleCoverImageUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    document.getElementById("custom-image-url-input").value = e.target.result;
+
+    const fileName = document.getElementById("selected-image-file-name");
+    if (fileName) {
+      fileName.textContent = file.name;
+    }
+  };
+
+  reader.readAsDataURL(file);
+}
     function openImageEditModal() {
       if (!activeFolderId) return;
       const dest = getAllDestinations()[activeFolderId];
       const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
       document.getElementById("custom-image-url-input").value = currCover;
+      onst selectedFileName = document.getElementById("selected-image-file-name");
+if (selectedFileName) {
+  selectedFileName.textContent = "";
+}
+
+const imageFileInput = document.getElementById("custom-image-file-input");
+if (imageFileInput) {
+  imageFileInput.value = "";
+}
 
       const presetBox = document.getElementById("preset-photos-container");
       presetBox.innerHTML = "";
@@ -2000,19 +2043,24 @@
     }
 
     function addNewItineraryPrompt() {
-      if (!activeFolderId) return;
-      const title = prompt("Enter a title for this itinerary (e.g., 'Summer Tour 2025'):");
-      if (!title) return;
+  if (!activeFolderId) return;
 
-      const list = getStoredItineraries(activeFolderId);
-      list.push({
-        id: "itin_" + Date.now(),
-        title: title,
-        days: []
-      });
-      saveItineraries(activeFolderId, list);
-      renderItinerariesList();
-    }
+  const title = prompt("Enter a title for this itinerary (e.g., 'Summer Tour 2025'):");
+  if (!title) return;
+
+  const list = getStoredItineraries(activeFolderId);
+
+  list.push({
+    id: "itin_" + Date.now(),
+    title: title,
+    gpxFileName: null,
+    gpxRaw: null,
+    days: []
+  });
+
+  saveItineraries(activeFolderId, list);
+  renderItinerariesList();
+}
 
     function deleteItinerary(itinIndex) {
       if (!confirm("Are you sure you want to delete this entire itinerary?")) return;
@@ -2141,11 +2189,37 @@
             <option value="Arrival/Departure">✈️ Arrival/Departure</option>
           `;
 
-        card.innerHTML = `
-          <div class="itinerary-card-header">
-            <h4>🗺️ ${escapeHtml(itin.title)}</h4>
-            <button class="btn-del-item" onclick="deleteItinerary(${itinIdx})" title="Delete Itinerary">🗑️</button>
-          </div>
+        const generalGpxHtml = itin.gpxFileName
+  ? `
+    <div class="day-gpx-badge" style="margin: 0 0 1rem 0;">
+      🗺️ General GPX attached: ${escapeHtml(itin.gpxFileName)}
+    </div>
+  `
+  : "";
+
+card.innerHTML = `
+  <div class="itinerary-card-header">
+    <h4>${escapeHtml(itin.title)}</h4>
+    <button
+      class="btn-del-item"
+      onclick="deleteItinerary(${itinIdx})"
+      title="Delete Itinerary"
+    >&times;</button>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+    <label class="gpx-file-btn">
+      <span>📁 Attach General .GPX</span>
+      <input
+        type="file"
+        accept=".gpx,application/gpx+xml"
+        style="display:none;"
+        onchange="attachItineraryGpx(event, ${itinIdx})"
+      />
+    </label>
+  </div>
+
+  ${generalGpxHtml}
 
           <div class="days-list">${daysHtml}</div>
 
@@ -2196,7 +2270,33 @@
     }
 
     let tempGpxData = {};
+function attachItineraryGpx(event, itinIdx) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
 
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const list = getStoredItineraries(activeFolderId);
+    const itinerary = list[itinIdx];
+
+    if (!itinerary) return;
+
+    itinerary.gpxFileName = file.name;
+    itinerary.gpxRaw = e.target.result;
+
+    saveItineraries(activeFolderId, list);
+    renderItinerariesList();
+
+    if (itinerary.gpxRaw && mapFolderDetail) {
+      plotGpxOnDetailMap(itinerary.gpxRaw);
+    }
+
+    alert(`General GPX file "${file.name}" attached to the itinerary.`);
+  };
+
+  reader.readAsText(file);
+}
     function attachDayGpx(event, itinIdx) {
       const file = event.target.files[0];
       if (!file) return;
