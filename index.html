@@ -999,340 +999,1629 @@
       color: #94a3b8;
       margin-top: 0.25rem;
     }
+
+    /* Image Edit Modal */
+    .image-modal-box {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .preset-photos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .preset-img {
+      width: 100%;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .preset-img:hover {
+      border-color: #e11d48;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.1rem; }
+      .interactive-map { height: 320px; }
+      .modal-banner { height: 220px; }
+      .modal-banner-overlay h2 { font-size: 1.6rem; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Sticky Top Navigation -->
   <header>
     <div class="header-inner">
       <div class="brand-title">
-        <span class="logo-icon">✈️</span>
-        <span>Travel ideas</span>
+        <span class="logo-icon">🌍</span> Travel ideas
       </div>
-
-      <nav class="tab-nav" aria-label="Main navigation">
-        <button type="button" class="tab-btn active">Explore</button>
-        <button type="button" class="tab-btn">Map</button>
+      <!-- Tab Controls -->
+      <nav class="tab-nav">
+        <button class="tab-btn active" id="btn-tab-backpacking" onclick="switchSection('backpacking')">
+          🎒 Backpacking
+        </button>
+        <button class="tab-btn" id="btn-tab-bikepacking" onclick="switchSection('bikepacking')">
+          🚴‍♀️ Bikepacking
+        </button>
       </nav>
     </div>
   </header>
 
   <main class="container">
+
+    <!-- Hero Title -->
     <section class="hero">
-      <h1>Dream trips, organized beautifully.</h1>
+      <h1>Travel ideas</h1>
     </section>
 
-    <section class="map-box">
-      <div class="map-box-header">
-        <h2>🌍 Travel map</h2>
-        <span class="badge">OpenStreetMap</span>
+    <!-- ========================================== -->
+    <!-- TAB 1: BACKPACKING SECTION -->
+    <!-- ========================================== -->
+    <div id="section-backpacking">
+      <!-- Backpacking Map Box -->
+      <div class="map-box">
+        <div class="map-box-header">
+          <h2>📍 Backpacking Destinations Map</h2>
+          <span class="badge">OpenStreetMap • Live & Visible</span>
+        </div>
+        <div id="map-backpacking" class="interactive-map"></div>
       </div>
-      <div id="travel-map" class="interactive-map" aria-label="Interactive travel map"></div>
-    </section>
 
-    <section class="section-header-row">
-      <h2 class="section-title">✦ Destination folders</h2>
-      <button type="button" class="btn-add-dest">＋ Add destination</button>
-    </section>
+      <!-- Section Header -->
+      <div class="section-header-row">
+        <h2 class="section-title">
+          <span>📁 Destinations</span>
+        </h2>
+        <button class="btn-add-dest" onclick="openAddDestinationModal('backpacking')">
+          + Add Destination
+        </button>
+      </div>
 
-    <section class="cards-grid">
-      <article class="dest-card">
-        <div class="dest-cover-wrapper">
-          <img class="dest-cover" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80" alt="Kyoto" />
-          <div class="dest-badge-tag">Culture</div>
-        </div>
-        <div class="dest-body">
-          <div class="dest-card-countries">
-            <span class="dest-country-pill">Japan</span>
-          </div>
-          <h3>Kyoto</h3>
-          <p>A serene mix of old temples, bamboo forests, and beautiful seasonal cuisine.</p>
-          <div class="dest-card-actions">
-            <button type="button" class="btn-folder">Open folder</button>
-            <button type="button" class="btn-card-del" aria-label="Delete Kyoto">×</button>
-          </div>
-        </div>
-      </article>
+      <div class="cards-grid" id="backpacking-destinations-grid">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
 
-      <article class="dest-card">
-        <div class="dest-cover-wrapper">
-          <img class="dest-cover" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80" alt="Reykjavík" />
-          <div class="dest-badge-tag">Nordic</div>
+    <!-- ========================================== -->
+    <!-- TAB 2: BIKEPACKING SECTION -->
+    <!-- ========================================== -->
+    <div id="section-bikepacking" style="display: none;">
+      <!-- Bikepacking Map Box -->
+      <div class="map-box">
+        <div class="map-box-header">
+          <h2>🚴‍♀️ Bikepacking Tours Map</h2>
+          <span class="badge">OpenStreetMap & Tour Overview</span>
         </div>
-        <div class="dest-body">
-          <div class="dest-card-countries">
-            <span class="dest-country-pill">Iceland</span>
-          </div>
-          <h3>Reykjavík</h3>
-          <p>A dramatic destination of volcanic landscapes, geysers, and rich northern light evenings.</p>
-          <div class="dest-card-actions">
-            <button type="button" class="btn-folder">Open folder</button>
-            <button type="button" class="btn-card-del" aria-label="Delete Reykjavík">×</button>
-          </div>
-        </div>
-      </article>
+        <div id="map-bikepacking" class="interactive-map"></div>
+      </div>
 
-      <article class="dest-card">
-        <div class="dest-cover-wrapper">
-          <img class="dest-cover" src="https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1200&q=80" alt="Lisbon" />
-          <div class="dest-badge-tag">City</div>
-        </div>
-        <div class="dest-body">
-          <div class="dest-card-countries">
-            <span class="dest-country-pill">Portugal</span>
-          </div>
-          <h3>Lisbon</h3>
-          <p>Colorful streets, tiled facades, steep viewpoints, and coastal energy around every corner.</p>
-          <div class="dest-card-actions">
-            <button type="button" class="btn-folder">Open folder</button>
-            <button type="button" class="btn-card-del" aria-label="Delete Lisbon">×</button>
-          </div>
-        </div>
-      </article>
-    </section>
+      <!-- Section Header -->
+      <div class="section-header-row">
+        <h2 class="section-title">
+          <span>🚲 Destinations</span>
+        </h2>
+        <button class="btn-add-dest" onclick="openAddDestinationModal('bikepacking')">
+          + Add Destination
+        </button>
+      </div>
+
+      <div class="cards-grid" id="bikepacking-destinations-grid">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
   </main>
 
-  <div class="modal-overlay" id="destination-modal" aria-hidden="true">
-    <div class="modal-window" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <button type="button" class="btn-close-modal" aria-label="Close modal">×</button>
+  <!-- ========================================== -->
+  <!-- MAIN DESTINATION FOLDER MODAL -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="folder-modal">
+    <div class="modal-window">
+      <button class="btn-close-modal" onclick="closeFolderModal()">&times;</button>
 
+      <!-- Top Banner with Real Photo -->
       <div class="modal-banner">
-        <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80" alt="Destination cover" />
+        <img id="modal-img" src="" alt="Destination cover" />
         <div class="modal-banner-overlay">
-          <h2 id="modal-title">Kyoto</h2>
+          <h2 id="modal-title">Destination</h2>
           <div class="banner-controls">
-            <button type="button" class="btn-banner-action">🖼 Change cover</button>
-            <button type="button" class="btn-banner-action">💾 Save</button>
+            <button class="btn-banner-action" onclick="openImageEditModal()">📷 Change Cover Photo</button>
+            <button class="btn-banner-action" id="btn-modal-delete-folder" style="color:#e11d48;" onclick="deleteCurrentFolder()">🗑️ Remove Folder</button>
           </div>
         </div>
       </div>
 
       <div class="modal-content">
+
+        <!-- Country Tags with Multi-Country Addition -->
         <div class="country-tags-bar">
-          <div class="country-tags-label">Countries</div>
-          <div class="country-tags-list">
-            <span class="country-tag-chip">Japan</span>
+          <div class="country-tags-label">
+            <span>🌐 Countries:</span>
+          </div>
+          <div class="country-tags-list" id="modal-country-tags">
+            <!-- Rendered via JS -->
           </div>
           <div class="add-country-box">
-            <input type="text" class="country-input-inline" placeholder="New country" />
-            <button type="button" class="btn-tag-add">Add</button>
+            <input type="text" id="new-country-tag-input" class="country-input-inline" placeholder="+ Add country..." onkeydown="if(event.key==='Enter') addCountryTag()" />
+            <button class="btn-tag-add" onclick="addCountryTag()">Add</button>
           </div>
         </div>
 
+        <!-- 1. Key Info Grid -->
         <div class="info-boxes">
           <div class="info-block">
-            <h4>Overview</h4>
-            <p>A serene mix of old temples, bamboo forests, and beautiful seasonal cuisine.</p>
+            <h4>☀️ Best Time to Travel</h4>
+            <p id="modal-best-time">Spring to autumn months offer optimal weather conditions.</p>
           </div>
-
           <div class="info-block">
-            <h4>Best for</h4>
-            <ul>
-              <li>Ancient temples</li>
-              <li>Tea houses</li>
-              <li>Lantern-lit streets</li>
-            </ul>
+            <h4>ℹ️ Basic Information</h4>
+            <p id="modal-basic-info"></p>
           </div>
-
-          <div class="info-block">
-            <h4>Trip style</h4>
-            <p>Slow travel + culture + food</p>
+          <div class="info-block" style="grid-column: 1 / -1;">
+            <h4>🛂 Visa Requirements (German & Polish Citizens)</h4>
+            <div id="modal-visa-info"></div>
           </div>
         </div>
 
-        <section class="folder-section">
+        <!-- 2. Things to See (Empty initially, draws routes on map) -->
+        <div class="folder-section">
           <div class="folder-section-header">
-            <h3>📍 Things to see</h3>
+            <h3>🗺️ Things to See & Personal Route</h3>
+            <span style="font-size:0.8rem; color:#64748b;">Add stops to plot on map</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Add cities, trailheads, or mountain stops. Adding places automatically marks them on the map and links them into a travel route.
+          </p>
+
+          <div class="things-form">
+            <input type="text" id="new-spot-input" class="app-input" placeholder="Type city or attraction name..." onkeydown="if(event.key==='Enter') addSpotToActiveFolder()" />
+            <button class="btn-pink-action" onclick="addSpotToActiveFolder()">+ Add Stop</button>
           </div>
 
-          <form class="things-form">
-            <input type="text" class="app-input" placeholder="Add a place, trail, or experience" />
-            <button type="submit" class="btn-pink-action">Add item</button>
-          </form>
+          <div class="things-list" id="modal-things-list"></div>
 
-          <div class="things-list">
-            <div class="thing-row">
-              <span>Fushimi Inari</span>
-              <button type="button" class="btn-del-item" aria-label="Remove Fushimi Inari">×</button>
-            </div>
-            <div class="thing-row">
-              <span>Arashiyama Bamboo Grove</span>
-              <button type="button" class="btn-del-item" aria-label="Remove Arashiyama Bamboo Grove">×</button>
-            </div>
-            <div class="thing-row">
-              <span>Gion district</span>
-              <button type="button" class="btn-del-item" aria-label="Remove Gion district">×</button>
-            </div>
-          </div>
-        </section>
+          <!-- Mini country map -->
+          <div id="folder-detail-map" class="country-map-panel"></div>
+        </div>
 
-        <section class="folder-section">
+        <!-- 3. Day-by-Day Itinerary Builder with Dropdown Categories & GPX -->
+        <div class="folder-section">
           <div class="folder-section-header">
-            <h3>🗺 Country map</h3>
+            <h3>📅 Itinerary & Day Planner</h3>
+            <button class="btn-pink-action" style="padding:0.4rem 0.9rem; font-size:0.82rem;" onclick="addNewItineraryPrompt()">+ Add New Itinerary</button>
           </div>
-          <div class="country-map-panel" id="country-map-panel"></div>
-        </section>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Create custom itineraries, add days sequentially, select day categories, record distances, altitude, and time, and upload per-day .GPX tracks.
+          </p>
 
-        <section class="folder-section">
+          <div id="itineraries-container">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- 4. Notes & To-Do List Section -->
+        <div class="folder-section">
           <div class="folder-section-header">
-            <h3>🧭 Itinerary builder</h3>
+            <h3>📝 Trip Notes & To-Do List</h3>
           </div>
-
-          <div class="itin-summary-banner">
-            <div class="summary-stat">
-              <div class="summary-stat-val">1</div>
-              <div class="summary-stat-lbl">Days</div>
-            </div>
-            <div class="summary-stat">
-              <div class="summary-stat-val">12</div>
-              <div class="summary-stat-lbl">KM</div>
-            </div>
-            <div class="summary-stat">
-              <div class="summary-stat-val">1</div>
-              <div class="summary-stat-lbl">Nights</div>
-            </div>
-          </div>
-
-          <div class="days-list">
-            <div class="day-item">
-              <div class="day-item-header">
-                <div class="day-title">Day 1: Temple morning</div>
-                <span class="day-category-tag">Culture</span>
-              </div>
-              <div class="day-metrics-badges">
-                <span class="metric-badge">12 km</span>
-                <span class="metric-badge">3h</span>
-                <span class="metric-badge">1 nights</span>
-              </div>
-              <div class="day-notes-box">Start at Kiyomizu-dera and walk through Higashiyama lane for a relaxed start.</div>
-              <div class="day-gpx-badge">🛰 Kyoto-Day-1.gpx</div>
-            </div>
-          </div>
-
-          <div class="add-day-box">
-            <form>
-              <div class="day-form-grid">
-                <select class="day-select">
-                  <option>Adventure</option>
-                  <option selected>Culture</option>
-                  <option>Relax</option>
-                  <option>Food</option>
-                  <option>Nature</option>
-                </select>
-                <input type="text" class="app-input" placeholder="Day title" value="Temple morning" />
-              </div>
-
-              <div class="metrics-input-row">
-                <div class="metric-field">
-                  <label>Distance</label>
-                  <input type="number" value="12" />
-                </div>
-                <div class="metric-field">
-                  <label>Time</label>
-                  <input type="number" value="3" />
-                </div>
-                <div class="metric-field">
-                  <label>Nights</label>
-                  <input type="number" value="1" />
-                </div>
-              </div>
-
-              <textarea class="app-input" rows="4" placeholder="Plan notes, route ideas, highlights...">Start at Kiyomizu-dera and walk through Higashiyama lane for a relaxed start.</textarea>
-
-              <div style="margin-top: 0.75rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-                <label class="gpx-file-btn" for="gpx-input">📁 Add GPX</label>
-                <input id="gpx-input" type="file" accept=".gpx" style="display:none;" />
-                <span style="font-size: 0.8rem; color: #475569;">Kyoto-Day-1.gpx</span>
-              </div>
-
-              <div style="margin-top: 1rem;">
-                <button type="submit" class="btn-pink-action">Add day</button>
-              </div>
-            </form>
-          </div>
-        </section>
-
-        <section class="folder-section">
           <div class="notes-grid">
+            <!-- To-Do List Subpanel -->
             <div class="todo-subpanel">
-              <h4>✅ To-do list</h4>
-              <form class="things-form">
-                <input type="text" class="app-input" placeholder="Add task" />
-                <button type="submit" class="btn-pink-action">Add</button>
-              </form>
-
-              <div class="todo-list">
-                <div class="todo-item">
-                  <input type="checkbox" />
-                  <span>Book ryokan</span>
-                </div>
-                <div class="todo-item">
-                  <input type="checkbox" />
-                  <span>Reserve tea ceremony</span>
-                </div>
+              <h4>✅ To-Do Checklist</h4>
+              <div class="todo-list" id="modal-todo-list"></div>
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="new-todo-input" class="app-input" style="padding:0.45rem 0.75rem; font-size:0.85rem;" placeholder="New to-do item..." onkeydown="if(event.key==='Enter') addTodoItem()" />
+                <button class="btn-pink-action" style="padding:0.45rem 0.8rem; font-size:0.82rem;" onclick="addTodoItem()">Add</button>
               </div>
             </div>
 
+            <!-- Notes Subpanel -->
             <div class="notes-subpanel">
-              <h4>📝 Saved notes</h4>
-              <form class="things-form">
-                <textarea class="app-input" rows="3" placeholder="Write a note..."></textarea>
-                <button type="submit" class="btn-pink-action">Save</button>
-              </form>
-
-              <div class="saved-notes-list">
-                <div class="note-card-item">
-                  <p>Try yudofu for lunch.</p>
-                  <div class="note-date">Today</div>
-                </div>
+              <h4>📌 Notes & Ideas</h4>
+              <div class="saved-notes-list" id="modal-notes-list"></div>
+              <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                <textarea id="new-note-input" class="app-input" rows="2" style="font-size:0.85rem; resize:vertical;" placeholder="Write a note, gear reminder, or local tip..."></textarea>
+                <button class="btn-pink-action" style="align-self:flex-end; padding:0.4rem 0.8rem; font-size:0.82rem;" onclick="addNoteItem()">Save Note</button>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+
       </div>
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- ADD NEW DESTINATION MODAL -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="add-dest-modal">
+    <div class="image-modal-box">
+      <h3 style="color:#be123c; margin-bottom:0.75rem;">+ Add New Destination</h3>
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+        <input type="text" id="new-dest-name" class="app-input" placeholder="Destination Name (e.g., Patagonia, Norway)" />
+        <input type="text" id="new-dest-country" class="app-input" placeholder="Countries involved (comma-separated, e.g. Chile, Argentina)" />
+        <textarea id="new-dest-desc" class="app-input" rows="2" placeholder="Brief description of the tour or country..."></textarea>
+        <input type="text" id="new-dest-img" class="app-input" placeholder="Cover Image URL (optional)" />
+        <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:0.5rem;">
+          <button class="btn-banner-action" onclick="closeAddDestinationModal()">Cancel</button>
+          <button class="btn-pink-action" onclick="saveNewDestination()">Create Destination</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- CHANGE COVER PHOTO MODAL -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="image-edit-modal">
+    <div class="image-modal-box">
+      <h3 style="color:#be123c; margin-bottom:0.5rem;">📷 Modify Destination Picture</h3>
+      <p style="font-size:0.88rem; color:#64748b; margin-bottom:1rem;">Paste any photo URL or select from verified landmark recommendations below:</p>
+
+      <input type="text" id="custom-image-url-input" class="app-input" placeholder="Paste image URL here (https://...)" style="margin-bottom:1rem; width:100%;" />
+      <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+  <label class="gpx-file-btn" style="cursor:pointer;">
+    📁 Choose image from computer
+    <input
+      id="custom-image-file-input"
+      type="file"
+      accept="image/*"
+      style="display:none;"
+      onchange="handleCoverImageUpload(event)"
+    />
+  </label>
+
+  <span
+    id="selected-image-file-name"
+    style="font-size:0.8rem; color:#64748b;"
+  ></span>
+</div>
+
+      <label style="font-size:0.8rem; font-weight:700; color:#475569;">Quick Preset Selection:</label>
+      <div class="preset-photos" id="preset-photos-container">
+        <!-- Filled dynamically based on active destination -->
+      </div>
+
+      <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem;">
+        <button class="btn-banner-action" onclick="closeImageEditModal()">Cancel</button>
+        <button class="btn-pink-action" onclick="applyCustomCoverPhoto()">Save Picture</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet Maps Script (OpenStreetMap Engine) -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
   <script>
-    const map = L.map('travel-map').setView([20, 0], 2);
+    /* ==========================================================
+       1. CORE DATA STORE (WITH AUTHENTIC LANDMARKS & COUNTRY LISTS)
+       ========================================================== */
+    const defaultBackpacking = {
+      bhutan: {
+        id: "bhutan",
+        tab: "backpacking",
+        name: "Bhutan",
+        flag: "🇧🇹",
+        countries: ["Bhutan"],
+        coordinates: [27.5142, 90.4336],
+        zoom: 7,
+        cover: "https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1200&q=80",
+        description: "Himalayan Buddhist kingdom famous for cliffside dzongs, Tiger's Nest monastery, and high glacial valleys.",
+        bestTime: "March to May (spring rhododendron blooms) and September to November (crisp mountain skies and festival season).",
+        basicInfo: "Capital: Thimphu | Currency: Ngultrum (BTN) & Indian Rupee | Language: Dzongkha | Key geography: High Himalayas.",
+        visaInfo: `
+          <ul>
+            <li><strong>German & Polish Citizens:</strong> An entry visa is mandatory prior to travel.</li>
+            <li><strong>eVisa Application:</strong> Applied directly via the Bhutan Department of Immigration online portal or licensed tour agency.</li>
+            <li><strong>Sustainable Development Fee (SDF):</strong> $100 USD per night per adult for ecological and cultural preservation.</li>
+            <li><strong>Passport validity:</strong> Minimum 6 months from arrival date.</li>
+          </ul>
+        `
+      },
+      armenia: {
+        id: "armenia",
+        tab: "backpacking",
+        name: "Armenia",
+        flag: "🇦🇲",
+        countries: ["Armenia"],
+        coordinates: [40.1792, 44.4991],
+        zoom: 7,
+        cover: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80",
+        description: "Dramatic mountain plateaus, 4th-century cliff monasteries, Lake Sevan, and deep basalt gorges.",
+        bestTime: "May to June (fresh green alpine valleys and wild flora) and September to October (golden autumn weather and harvest).",
+        basicInfo: "Capital: Yerevan | Currency: Armenian Dram (AMD) | Language: Armenian | Key geography: Lesser Caucasus & volcanic plateaus.",
+        visaInfo: `
+          <ul>
+            <li><strong>German & Polish Citizens:</strong> <strong>Visa-free</strong> for stays up to 180 days per calendar year.</li>
+            <li><strong>Entry Document:</strong> Valid EU passport or national ID card.</li>
+            <li><strong>Border Notes:</strong> Borders with Georgia and Iran are open; borders with Turkey and Azerbaijan remain closed.</li>
+          </ul>
+        `
+      },
+      caboverde: {
+        id: "caboverde",
+        tab: "backpacking",
+        name: "Cabo Verde",
+        flag: "🇨🇻",
+        countries: ["Cabo Verde"],
+        coordinates: [15.1201, -23.6052],
+        zoom: 8,
+        cover: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
+        description: "Volcanic Atlantic archipelago combining Morna rhythms, cobblestone ridges, and dramatic coastal trails.",
+        bestTime: "November to June when temperatures are warm, dry, and balanced by Atlantic trade winds—ideal for trekking.",
+        basicInfo: "Capital: Praia (Santiago) | Currency: Cape Verdean Escudo (CVE) | Languages: Portuguese, Crioulo | Geography: 10 volcanic islands.",
+        visaInfo: `
+          <ul>
+            <li><strong>German & Polish Citizens:</strong> <strong>Visa-exempt</strong> for tourism stays up to 30 days.</li>
+            <li><strong>E.A.S.E. Pre-Registration:</strong> Compulsory online registration via the official EASE portal at least 5 days prior to arrival.</li>
+            <li><strong>Airport Security Fee (TSA):</strong> ~3,400 CVE (~€31) payable online during EASE registration.</li>
+          </ul>
+        `
+      },
+      china: {
+        id: "china",
+        tab: "backpacking",
+        name: "China",
+        flag: "🇨🇳",
+        countries: ["China"],
+        coordinates: [35.8617, 104.1954],
+        zoom: 4,
+        cover: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1200&q=80",
+        description: "From karst limestone towers along the Li River and snowy Yunnan passes to ancient Silk Road routes.",
+        bestTime: "Spring (April–May) and Autumn (September–October) for clear skies, comfortable temperatures, and peak trail conditions.",
+        basicInfo: "Capital: Beijing | Currency: Chinese Yuan (CNY) | Language: Mandarin | Key geography: Tibetan plateau, Karst peaks, river basins.",
+        visaInfo: `
+          <ul>
+            <li><strong>German & Polish Citizens:</strong> Currently benefit from <strong>15-day visa-free entry</strong> (for tourism, transit, business).</li>
+            <li><strong>Stays beyond 15 days:</strong> Standard Tourist (L) Visa required through Chinese Visa Application Service Centers prior to travel.</li>
+            <li><strong>Passport validity:</strong> Minimum 6 months.</li>
+          </ul>
+        `
+      },
+      bosnia: {
+        id: "bosnia",
+        tab: "backpacking",
+        name: "Bosnia & Herzegovina",
+        flag: "🇧🇦",
+        countries: ["Bosnia & Herzegovina"],
+        coordinates: [43.9159, 17.6791],
+        zoom: 7,
+        cover: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=1200&q=80",
+        description: "Emerald mountain rivers, historic Ottoman arched bridges, and untouched Dinaric Alpine wilderness.",
+        bestTime: "May to October. July & August are best for high alpine hikes in Sutjeska and rafting emerald waters.",
+        basicInfo: "Capital: Sarajevo | Currency: Convertible Mark (BAM) | Languages: Bosnian, Croatian, Serbian | Geography: Dinaric Alps.",
+        visaInfo: `
+          <ul>
+            <li><strong>German & Polish Citizens:</strong> <strong>Visa-free</strong> for up to 90 days within any 180-day window.</li>
+            <li><strong>Entry Document:</strong> Valid EU passport or national Identity Card (valid at least 3 months past departure).</li>
+          </ul>
+        `
+      }
+    };
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    const defaultBikepacking = {
+      spreewald: {
+        id: "spreewald",
+        tab: "bikepacking",
+        name: "Spreewald",
+        flag: "🇩🇪",
+        countries: ["Germany"],
+        coordinates: [51.8683, 14.0336],
+        zoom: 9,
+        cover: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        description: "Lush canal networks, flat gravel pathways through protected pine forests, traditional wooden barge bridges, and tranquil camping along the Spree river.",
+        bestTime: "April to October. Spring and early autumn provide crisp air and peaceful uncrowded paths.",
+        basicInfo: "Region: Brandenburg, Germany | Distance: ~200 km loop | Terrain: Flat gravel & smooth paved forest tracks | Base: Lübbenau.",
+        visaInfo: "<p>Located within the Schengen zone. No visa required for German or Polish citizens.</p>"
+      },
+      wien: {
+        id: "wien",
+        tab: "bikepacking",
+        name: "Wien & Danube Valley",
+        flag: "🇦🇹",
+        countries: ["Austria", "Slovakia"],
+        coordinates: [48.2082, 16.3738],
+        zoom: 8,
+        cover: "https://images.unsplash.com/photo-1516550893923-42d28e5677af?auto=format&fit=crop&w=1200&q=80",
+        description: "Rolling vineyards in the Wachau Valley, imperial palaces, secluded riverside sandbanks, and smooth dedicated bike corridors leading straight into Vienna.",
+        bestTime: "May to October. September is especially picturesque with vineyard harvests and wine taverns (Heurige).",
+        basicInfo: "Country: Austria | Distance: ~180–320 km | Terrain: Paved river trails & gentle rolling hills | Highlights: Melk, Krems, Vienna Prater.",
+        visaInfo: "<p>Located within the EU & Schengen zone. Free movement for German and Polish citizens with valid ID/passport.</p>"
+      },
+      eurotrip: {
+        id: "eurotrip",
+        tab: "bikepacking",
+        name: "Eurotrip Cross-Continent",
+        flag: "🇪🇺",
+        countries: ["Germany", "Austria", "Italy", "Slovenia"],
+        coordinates: [47.5162, 14.5501],
+        zoom: 5,
+        cover: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
+        description: "The ultimate bikepacking journey connecting European frontiers—traversing borderless mountain passes, EuroVelo routes, and diverse cultural heartlands.",
+        bestTime: "June to September for high mountain passes (snow-free); April to October for lowland river corridors.",
+        basicInfo: "Scope: Multi-country European crossing | Distance: Flexible (1,000+ km) | Terrain: Mixed gravel, tarmac, alpine cols.",
+        visaInfo: "<p>Seamless border crossings across Schengen countries for German & Polish passport holders.</p>"
+      },
+      schwarzwald: {
+        id: "schwarzwald",
+        tab: "bikepacking",
+        name: "Schwarzwald (Black Forest)",
+        flag: "🇩🇪",
+        countries: ["Germany", "France", "Switzerland"],
+        coordinates: [48.1500, 8.2000],
+        zoom: 8,
+        cover: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
+        description: "Dense evergreen canopy, deep valleys, cascading waterfalls, and challenging climbs along the ridge roads between Baden-Baden, Titisee, and Feldberg.",
+        bestTime: "May to October. July and August offer refreshing cool rides under thick forest tree cover.",
+        basicInfo: "Region: Baden-Württemberg, Germany | Elevation: Up to 1,493 m (Feldberg) | Terrain: Mountain gravel roads & steep ascents.",
+        visaInfo: "<p>Located within Germany. No visa required for German or Polish citizens.</p>"
+      }
+    };
 
-    const featured = [
-      { name: 'Kyoto', coords: [35.0116, 135.7681] },
-      { name: 'Reykjavík', coords: [64.1466, -21.9426] },
-      { name: 'Lisbon', coords: [38.7223, -9.1393] }
-    ];
+    /* Suggested verified photo presets */
+    const photoPresets = {
+      bhutan: [
+        "https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1582650625119-3a31f8418b7d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      armenia: [
+        "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80"
+      ],
+      caboverde: [
+        "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      ],
+      china: [
+        "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      bosnia: [
+        "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=1200&q=80"
+      ]
+    };
 
-    featured.forEach(item => {
-      L.marker(item.coords).addTo(map)
-        .bindPopup(`<strong>${item.name}</strong>`);
+    /* Common place coordinates for route plotting inside countries */
+    const knownLocations = {
+      "yerevan": [40.1792, 44.4991],
+      "dilijan": [40.7410, 44.8638],
+      "sevan": [40.5562, 44.9553],
+      "lake sevan": [40.3541, 45.3341],
+      "noravank": [39.6847, 45.2331],
+      "tatev": [39.3794, 46.2503],
+      "gyumri": [40.7929, 43.8465],
+      "paro": [27.4287, 89.4164],
+      "thimphu": [27.4728, 89.6393],
+      "punakha": [27.5819, 89.8635],
+      "bumthang": [27.5500, 90.7333],
+      "praia": [14.9330, -23.5133],
+      "mindelo": [16.8875, -24.9882],
+      "santo antao": [17.0667, -25.1000],
+      "sal": [16.7500, -22.9167],
+      "sarajevo": [43.8563, 18.4131],
+      "mostar": [43.3438, 17.8078],
+      "konjic": [43.6514, 17.9608],
+      "blagaj": [43.2569, 17.8997],
+      "beijing": [39.9042, 116.4074],
+      "shanghai": [31.2304, 121.4737],
+      "guilin": [25.2736, 110.2902],
+      "chengdu": [30.5728, 104.0668],
+      "lübbenau": [51.8683, 14.0336],
+      "lehde": [51.8650, 14.0500],
+      "burg": [51.8333, 14.1500],
+      "vienna": [48.2082, 16.3738],
+      "melk": [48.2272, 15.3325],
+      "krems": [48.4092, 15.6142],
+      "baden-baden": [48.7656, 8.2417],
+      "feldberg": [47.8739, 8.0378],
+      "titisee": [47.9000, 8.1500]
+    };
+
+    /* App State */
+    let mapBackpacking = null;
+    let mapBikepacking = null;
+    let mapFolderDetail = null;
+    let activeFolderId = null;
+    let activeTabContext = "backpacking";
+    let detailMapMarkers = [];
+    let detailMapLine = null;
+    let gpxLayers = [];
+
+    /* Load and Merge Storage */
+    function getAllDestinations() {
+      const stored = localStorage.getItem("dorota_all_destinations_v4");
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch(e) {}
+      }
+      const initial = { ...defaultBackpacking, ...defaultBikepacking };
+      localStorage.setItem("dorota_all_destinations_v4", JSON.stringify(initial));
+      return initial;
+    }
+
+    function saveAllDestinations(destObj) {
+      localStorage.setItem("dorota_all_destinations_v4", JSON.stringify(destObj));
+    }
+
+    /* Initialize Application */
+    document.addEventListener("DOMContentLoaded", () => {
+      renderAllCards();
+      initBackpackingMap();
     });
 
-    const countryMap = L.map('country-map-panel').setView([35.0116, 135.7681], 5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(countryMap);
-    L.marker([35.0116, 135.7681]).addTo(countryMap).bindPopup('Kyoto');
+    /* Switch Sections */
+    function switchSection(tab) {
+      activeTabContext = tab;
+      const btnBackpack = document.getElementById("btn-tab-backpacking");
+      const btnBikepack = document.getElementById("btn-tab-bikepacking");
+      const secBackpack = document.getElementById("section-backpacking");
+      const secBikepack = document.getElementById("section-bikepacking");
 
-    document.querySelectorAll('.tab-btn').forEach((button) => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.remove('active'));
-        button.classList.add('active');
+      if (tab === 'backpacking') {
+        btnBackpack.classList.add("active");
+        btnBikepack.classList.remove("active");
+        secBackpack.style.display = "block";
+        secBikepack.style.display = "none";
+        setTimeout(() => { if (mapBackpacking) mapBackpacking.invalidateSize(); }, 150);
+      } else {
+        btnBikepack.classList.add("active");
+        btnBackpack.classList.remove("active");
+        secBackpack.style.display = "none";
+        secBikepack.style.display = "block";
+        if (!mapBikepacking) {
+          initBikepackingMap();
+        } else {
+          setTimeout(() => { mapBikepacking.invalidateSize(); }, 150);
+        }
+      }
+    }
+
+    /* Country Flag Helper */
+    function getCountryEmoji(countryName) {
+      const c = (countryName || "").toLowerCase().trim();
+      if (c.includes("armenia")) return "🇦🇲";
+      if (c.includes("bhutan")) return "🇧🇹";
+      if (c.includes("cabo verde") || c.includes("cape verde")) return "🇨🇻";
+      if (c.includes("china")) return "🇨🇳";
+      if (c.includes("bosnia")) return "🇧🇦";
+      if (c.includes("germany") || c.includes("deutschland")) return "🇩🇪";
+      if (c.includes("austria") || c.includes("österreich")) return "🇦🇹";
+      if (c.includes("poland") || c.includes("polska")) return "🇵🇱";
+      if (c.includes("georgia")) return "🇬🇪";
+      if (c.includes("turkey") || c.includes("türkiye")) return "🇹🇷";
+      if (c.includes("france")) return "🇫🇷";
+      if (c.includes("italy")) return "🇮🇹";
+      if (c.includes("switzerland")) return "🇨🇭";
+      if (c.includes("slovakia")) return "🇸🇰";
+      if (c.includes("slovenia")) return "🇸🇮";
+      return "📍";
+    }
+
+    /* Render Cards for Both Tabs */
+    function renderAllCards() {
+      const all = getAllDestinations();
+      const bpGrid = document.getElementById("backpacking-destinations-grid");
+      const bikeGrid = document.getElementById("bikepacking-destinations-grid");
+
+      bpGrid.innerHTML = "";
+      bikeGrid.innerHTML = "";
+
+      Object.values(all).forEach(dest => {
+        const card = document.createElement("div");
+        card.className = "dest-card";
+
+        const customCover = localStorage.getItem(`dorota_cover_${dest.id}`) || dest.cover;
+        const countries = dest.countries || [dest.name];
+        let countryPillsHtml = countries.map(c => `
+          <span class="dest-country-pill">${getCountryEmoji(c)} ${escapeHtml(c)}</span>
+        `).join("");
+
+        card.innerHTML = `
+          <div class="dest-cover-wrapper" onclick="openFolderModal('${dest.id}')">
+            <img class="dest-cover" id="card-cover-${dest.id}" src="${customCover}" alt="${dest.name}" loading="lazy" />
+            <span class="dest-badge-tag">${dest.tab === 'bikepacking' ? '🚴 Bikepacking' : '🎒 Backpacking'}</span>
+          </div>
+          <div class="dest-body">
+            <div class="dest-card-countries">${countryPillsHtml}</div>
+            <h3>${dest.flag || '📍'} ${dest.name}</h3>
+            <p>${dest.description}</p>
+            <div class="dest-card-actions">
+              <button class="btn-folder" onclick="openFolderModal('${dest.id}')">
+                Open Folder <span>&rarr;</span>
+              </button>
+              <button class="btn-card-del" onclick="deleteDestinationDirectly('${dest.id}')" title="Delete Folder">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+
+        if (dest.tab === "bikepacking") {
+          bikeGrid.appendChild(card);
+        } else {
+          bpGrid.appendChild(card);
+        }
       });
-    });
+    }
 
-    document.querySelector('.btn-close-modal').addEventListener('click', () => {
-      document.getElementById('destination-modal').classList.remove('active');
-    });
+    /* ==========================================================
+       2. MAP INITIALIZATIONS (OPENSTREETMAP - FREE & NO API KEY)
+       ========================================================== */
+    function initBackpackingMap() {
+      if (mapBackpacking) return;
 
-    document.querySelectorAll('.btn-folder').forEach((button) => {
-      button.addEventListener('click', () => {
-        document.getElementById('destination-modal').classList.add('active');
+      mapBackpacking = L.map('map-backpacking', {
+        center: [30.0, 35.0],
+        zoom: 2,
+        scrollWheelZoom: false
       });
-    });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; OpenStreetMap'
+      }).addTo(mapBackpacking);
+
+      refreshMapPins(mapBackpacking, 'backpacking', '#e11d48');
+    }
+
+    function initBikepackingMap() {
+      if (mapBikepacking) return;
+
+      mapBikepacking = L.map('map-bikepacking', {
+        center: [49.5, 12.0],
+        zoom: 4,
+        scrollWheelZoom: false
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; OpenStreetMap'
+      }).addTo(mapBikepacking);
+
+      refreshMapPins(mapBikepacking, 'bikepacking', '#2563eb');
+    }
+
+    function refreshMapPins(mapInstance, tabType, color) {
+      if (!mapInstance) return;
+      const all = getAllDestinations();
+
+      Object.values(all).filter(d => d.tab === tabType).forEach(dest => {
+        const marker = L.circleMarker(dest.coordinates, {
+          radius: 9,
+          fillColor: color,
+          color: "#ffffff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.95
+        }).addTo(mapInstance);
+
+        const countryStr = (dest.countries && dest.countries.length > 0) ? `<div style="font-size:0.75rem; color:#64748b; margin-bottom:4px;">${dest.countries.join(', ')}</div>` : '';
+
+        marker.bindPopup(`
+          <div style="font-family: sans-serif; text-align: center; padding: 4px;">
+            <strong style="color:${color}; font-size:1rem;">${dest.flag || '📍'} ${dest.name}</strong><br/>
+            ${countryStr}
+            <p style="margin: 4px 0; font-size: 0.85rem; color:#475569;">${dest.description.substring(0, 80)}...</p>
+            <button style="margin-top:6px; background:${color}; color:#fff; border:none; padding:4px 10px; border-radius:6px; cursor:pointer;" onclick="openFolderModal('${dest.id}')">View Folder</button>
+          </div>
+        `);
+      });
+    }
+
+    /* ==========================================================
+       3. FOLDER MODAL CONTROLS & CONTENT RENDERING
+       ========================================================== */
+    function openFolderModal(destId) {
+      activeFolderId = destId;
+      const all = getAllDestinations();
+      const dest = all[destId];
+      if (!dest) return;
+
+      const activeCover = localStorage.getItem(`dorota_cover_${dest.id}`) || dest.cover;
+      document.getElementById("modal-img").src = activeCover;
+      document.getElementById("modal-title").innerHTML = `${dest.flag || '📍'} ${dest.name}`;
+      document.getElementById("modal-best-time").textContent = dest.bestTime || "May through October are generally ideal.";
+      document.getElementById("modal-basic-info").textContent = dest.basicInfo || dest.description;
+      document.getElementById("modal-visa-info").innerHTML = dest.visaInfo || "<p>Please verify latest consular requirements for German & Polish passport holders.</p>";
+
+      document.getElementById("folder-modal").classList.add("active");
+
+      renderCountryTags();
+      renderThingsList();
+      renderItinerariesList();
+      renderTodoList();
+      renderNotesList();
+
+      setTimeout(() => {
+        initOrUpdateDetailMap(dest);
+      }, 250);
+    }
+
+    function closeFolderModal() {
+      document.getElementById("folder-modal").classList.remove("active");
+      activeFolderId = null;
+    }
+
+    function deleteCurrentFolder() {
+      if (!activeFolderId) return;
+      if (confirm("Are you sure you want to remove this entire destination folder?")) {
+        const all = getAllDestinations();
+        delete all[activeFolderId];
+        saveAllDestinations(all);
+        closeFolderModal();
+        renderAllCards();
+      }
+    }
+
+    function deleteDestinationDirectly(id) {
+      if (confirm("Are you sure you want to delete this destination folder?")) {
+        const all = getAllDestinations();
+        delete all[id];
+        saveAllDestinations(all);
+        renderAllCards();
+      }
+    }
+
+    /* ==========================================================
+       COUNTRY TAG MANAGEMENT (ADD & REMOVE COUNTRIES)
+       ========================================================== */
+    function renderCountryTags() {
+      const container = document.getElementById("modal-country-tags");
+      container.innerHTML = "";
+      if (!activeFolderId) return;
+
+      const all = getAllDestinations();
+      const dest = all[activeFolderId];
+      if (!dest) return;
+
+      const countries = dest.countries || [dest.name];
+
+      countries.forEach((country, index) => {
+        const chip = document.createElement("span");
+        chip.className = "country-tag-chip";
+        chip.innerHTML = `
+          <span>${getCountryEmoji(country)} ${escapeHtml(country)}</span>
+          <button class="btn-tag-remove" onclick="removeCountryTag(${index})" title="Remove country">&times;</button>
+        `;
+        container.appendChild(chip);
+      });
+    }
+
+    function addCountryTag() {
+      const input = document.getElementById("new-country-tag-input");
+      const val = input.value.trim();
+      if (!val || !activeFolderId) return;
+
+      const all = getAllDestinations();
+      const dest = all[activeFolderId];
+      if (!dest) return;
+
+      if (!dest.countries) dest.countries = [];
+      if (!dest.countries.includes(val)) {
+        dest.countries.push(val);
+        saveAllDestinations(all);
+      }
+
+      input.value = "";
+      renderCountryTags();
+      renderAllCards();
+    }
+
+    function removeCountryTag(index) {
+      if (!activeFolderId) return;
+      const all = getAllDestinations();
+      const dest = all[activeFolderId];
+      if (!dest || !dest.countries) return;
+
+      dest.countries.splice(index, 1);
+      saveAllDestinations(all);
+      renderCountryTags();
+      renderAllCards();
+    }
+
+    /* ==========================================================
+       4. COVER PHOTO MODIFICATION FEATURE
+       ========================================================== */
+    function handleCoverImageUpload(event) {
+  function handleCoverImageUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    document.getElementById("custom-image-url-input").value = e.target.result;
+
+    const fileName = document.getElementById("selected-image-file-name");
+    if (fileName) {
+      fileName.textContent = file.name;
+    }
+  };
+
+  reader.readAsDataURL(file);
+}
+    function openImageEditModal() {
+      if (!activeFolderId) return;
+      const dest = getAllDestinations()[activeFolderId];
+      const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
+      document.getElementById("custom-image-url-input").value = currCover;
+      const selectedFileName = document.getElementById("selected-image-file-name");
+if (selectedFileName) {
+  selectedFileName.textContent = "";
+}
+
+const imageFileInput = document.getElementById("custom-image-file-input");
+if (imageFileInput) {
+  imageFileInput.value = "";
+}
+
+      const presetBox = document.getElementById("preset-photos-container");
+      presetBox.innerHTML = "";
+
+      const presets = photoPresets[activeFolderId] || [
+        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80"
+      ];
+function openImageEditModal() {
+  if (!activeFolderId) return;
+
+      presets.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.className = "preset-img";
+        img.onclick = () => {
+          document.getElementById("custom-image-url-input").value = url;
+        };
+        presetBox.appendChild(img);
+      });
+  const dest = getAllDestinations()[activeFolderId];
+  const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
+  document.getElementById("custom-image-url-input").value = currCover;
+
+  const selectedFileName = document.getElementById("selected-image-file-name");
+  if (selectedFileName) {
+    selectedFileName.textContent = "";
+  }
+
+  const imageFileInput = document.getElementById("custom-image-file-input");
+  if (imageFileInput) {
+    imageFileInput.value = "";
+  }
+
+  const presetBox = document.getElementById("preset-photos-container");
+  presetBox.innerHTML = "";
+
+  const presets = photoPresets[activeFolderId] || [
+    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80"
+  ];
+
+  presets.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.className = "preset-img";
+    img.onclick = () => {
+      document.getElementById("custom-image-url-input").value = url;
+    };
+    presetBox.appendChild(img);
+  });
+
+      document.getElementById("image-edit-modal").classList.add("active");
+    }
+  document.getElementById("image-edit-modal").classList.add("active");
+}
+
+    function closeImageEditModal() {
+      document.getElementById("image-edit-modal").classList.remove("active");
+    }
+
+    function applyCustomCoverPhoto() {
+      if (!activeFolderId) return;
+      const url = document.getElementById("custom-image-url-input").value.trim();
+      if (!url) return;
+
+      localStorage.setItem(`dorota_cover_${activeFolderId}`, url);
+      document.getElementById("modal-img").src = url;
+
+      const cardImg = document.getElementById(`card-cover-${activeFolderId}`);
+      if (cardImg) cardImg.src = url;
+
+      closeImageEditModal();
+    }
+
+    /* ==========================================================
+       5. THINGS TO SEE & PERSONAL ROUTE BUILDER
+       ========================================================== */
+    function getStoredSpots(id) {
+      const data = localStorage.getItem(`dorota_spots_${id}`);
+      return data ? JSON.parse(data) : [];
+    }
+
+    function storeSpots(id, arr) {
+      localStorage.setItem(`dorota_spots_${id}`, JSON.stringify(arr));
+    }
+
+    function renderThingsList() {
+      const listContainer = document.getElementById("modal-things-list");
+      listContainer.innerHTML = "";
+      const spots = getStoredSpots(activeFolderId);
+
+      if (spots.length === 0) {
+        listContainer.innerHTML = `
+          <div style="color: var(--text-muted); font-style: italic; padding: 0.5rem 0;">
+            No items added yet. Enter any attraction or place name above to place it on the map!
+          </div>
+        `;
+        return;
+      }
+
+      spots.forEach((spot, idx) => {
+        const row = document.createElement("div");
+        row.className = "thing-row";
+        row.innerHTML = `
+          <span><strong>Stop ${idx + 1}:</strong> ${escapeHtml(spot)}</span>
+          <button class="btn-del-item" onclick="deleteSpot(${idx})" title="Remove Stop">&times;</button>
+        `;
+        listContainer.appendChild(row);
+      });
+    }
+
+    function addSpotToActiveFolder() {
+      const input = document.getElementById("new-spot-input");
+      const val = input.value.trim();
+      if (!val || !activeFolderId) return;
+
+      const spots = getStoredSpots(activeFolderId);
+      spots.push(val);
+      storeSpots(activeFolderId, spots);
+      input.value = "";
+
+      renderThingsList();
+      refreshCountryMapRoute();
+    }
+
+    function deleteSpot(index) {
+      if (!activeFolderId) return;
+      const spots = getStoredSpots(activeFolderId);
+      spots.splice(index, 1);
+      storeSpots(activeFolderId, spots);
+
+      renderThingsList();
+      refreshCountryMapRoute();
+    }
+
+    function initOrUpdateDetailMap(dest) {
+      if (!mapFolderDetail) {
+        mapFolderDetail = L.map('folder-detail-map').setView(dest.coordinates, dest.zoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18,
+          attribution: '&copy; OpenStreetMap'
+        }).addTo(mapFolderDetail);
+      } else {
+        mapFolderDetail.setView(dest.coordinates, dest.zoom);
+        mapFolderDetail.invalidateSize();
+      }
+
+      refreshCountryMapRoute();
+    }
+
+    function refreshCountryMapRoute() {
+      if (!mapFolderDetail || !activeFolderId) return;
+
+      detailMapMarkers.forEach(m => mapFolderDetail.removeLayer(m));
+      detailMapMarkers = [];
+      if (detailMapLine) {
+        mapFolderDetail.removeLayer(detailMapLine);
+        detailMapLine = null;
+      }
+
+      const dest = getAllDestinations()[activeFolderId];
+      const spots = getStoredSpots(activeFolderId);
+      const points = [];
+
+      spots.forEach((spot, i) => {
+        const lower = spot.toLowerCase().trim();
+        let coords = knownLocations[lower];
+
+        if (!coords) {
+          const offsetLat = Math.sin(i * 1.6) * 0.35;
+          const offsetLon = Math.cos(i * 1.6) * 0.35;
+          coords = [dest.coordinates[0] + offsetLat, dest.coordinates[1] + offsetLon];
+        }
+
+        points.push(coords);
+
+        const marker = L.circleMarker(coords, {
+          radius: 8,
+          fillColor: "#e11d48",
+          color: "#ffffff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.95
+        }).addTo(mapFolderDetail);
+
+        marker.bindPopup(`<strong>Stop ${i + 1}:</strong> ${escapeHtml(spot)}`).openPopup();
+        detailMapMarkers.push(marker);
+      });
+
+      if (points.length > 1) {
+        detailMapLine = L.polyline(points, {
+          color: '#e11d48',
+          weight: 3.5,
+          dashArray: '6, 8',
+          opacity: 0.9
+        }).addTo(mapFolderDetail);
+
+        mapFolderDetail.fitBounds(detailMapLine.getBounds(), { padding: [30, 30] });
+      } else if (points.length === 1) {
+        mapFolderDetail.setView(points[0], dest.zoom);
+      }
+    }
+
+    /* ==========================================================
+       6. ITINERARY BUILDER WITH METRICS, SUMMARY & GPX
+       ========================================================== */
+    function getStoredItineraries(destId) {
+      const data = localStorage.getItem(`dorota_itineraries_${destId}`);
+      return data ? JSON.parse(data) : [];
+    }
+
+    function saveItineraries(destId, list) {
+      localStorage.setItem(`dorota_itineraries_${destId}`, JSON.stringify(list));
+    }
+
+    function addNewItineraryPrompt() {
+  if (!activeFolderId) return;
+
+  const title = prompt("Enter a title for this itinerary (e.g., 'Summer Tour 2025'):");
+  if (!title) return;
+
+  const list = getStoredItineraries(activeFolderId);
+
+  list.push({
+    id: "itin_" + Date.now(),
+    title: title,
+    gpxFileName: null,
+    gpxRaw: null,
+    days: []
+  });
+
+  saveItineraries(activeFolderId, list);
+  renderItinerariesList();
+}
+
+    function deleteItinerary(itinIndex) {
+      if (!confirm("Are you sure you want to delete this entire itinerary?")) return;
+      const list = getStoredItineraries(activeFolderId);
+      list.splice(itinIndex, 1);
+      saveItineraries(activeFolderId, list);
+      renderItinerariesList();
+    }
+
+    function onCategoryChange(itinIdx) {
+      const catSelect = document.getElementById(`day-cat-${itinIdx}`);
+      const metricsRow = document.getElementById(`metrics-row-${itinIdx}`);
+      if (!metricsRow) return;
+
+      const dest = getAllDestinations()[activeFolderId];
+      const isBike = dest.tab === "bikepacking";
+
+      if (isBike) {
+        metricsRow.style.display = "grid";
+      } else {
+        if (catSelect.value === "Hike") {
+          metricsRow.style.display = "grid";
+        } else {
+          metricsRow.style.display = "none";
+        }
+      }
+    }
+
+    function renderItinerariesList() {
+      const container = document.getElementById("itineraries-container");
+      container.innerHTML = "";
+      const list = getStoredItineraries(activeFolderId);
+      const dest = getAllDestinations()[activeFolderId];
+      const isBike = dest.tab === "bikepacking";
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div style="color: var(--text-muted); font-style: italic; padding: 0.75rem 0;">
+            No itineraries created yet. Click "+ Add New Itinerary" above to start planning days!
+          </div>
+        `;
+        return;
+      }
+
+      list.forEach((itin, itinIdx) => {
+        const card = document.createElement("div");
+        card.className = "itinerary-card";
+
+        let daysHtml = "";
+        let totalKm = 0;
+        let totalAlt = 0;
+        let totalMinutes = 0;
+        let hasMetrics = false;
+
+        if (itin.days.length === 0) {
+          daysHtml = `<p style="color:#94a3b8; font-size:0.85rem; font-style:italic;">No days added yet. Use the form below to add Day 1.</p>`;
+        } else {
+          itin.days.forEach((day, dayIdx) => {
+            const km = parseFloat(day.km) || 0;
+            const alt = parseFloat(day.altitude) || 0;
+            const h = parseInt(day.hours) || 0;
+            const m = parseInt(day.mins) || 0;
+
+            if (km > 0 || alt > 0 || h > 0 || m > 0) {
+              totalKm += km;
+              totalAlt += alt;
+              totalMinutes += (h * 60) + m;
+              hasMetrics = true;
+            }
+
+            let metricsPills = "";
+            if (km > 0) metricsPills += `<span class="metric-badge">📏 ${km} km</span>`;
+            if (alt > 0) metricsPills += `<span class="metric-badge">⛰️ ${alt} m</span>`;
+            if (h > 0 || m > 0) metricsPills += `<span class="metric-badge">⏱️ ${h}h ${m}m</span>`;
+
+            daysHtml += `
+              <div class="day-item">
+                <div class="day-item-header">
+                  <span class="day-title">Day ${dayIdx + 1}: ${escapeHtml(day.title || 'Stage')}</span>
+                  <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <span class="day-category-tag">${escapeHtml(day.category)}</span>
+                    <button class="btn-del-item" onclick="deleteDay(${itinIdx}, ${dayIdx})" title="Delete Day">&times;</button>
+                  </div>
+                </div>
+                ${metricsPills ? `<div class="day-metrics-badges">${metricsPills}</div>` : ''}
+                ${day.notes ? `<div class="day-notes-box">📝 ${escapeHtml(day.notes)}</div>` : ''}
+                ${day.gpxFileName ? `<div class="day-gpx-badge">📍 GPX attached: ${escapeHtml(day.gpxFileName)}</div>` : ''}
+              </div>
+            `;
+          });
+        }
+
+        // Summary calculation
+        let summaryBannerHtml = "";
+        if (hasMetrics) {
+          const sumHours = Math.floor(totalMinutes / 60);
+          const sumMins = totalMinutes % 60;
+          summaryBannerHtml = `
+            <div class="itin-summary-banner">
+              <div class="summary-stat">
+                <div class="summary-stat-val">${totalKm.toFixed(1)} km</div>
+                <div class="summary-stat-lbl">Total Distance</div>
+              </div>
+              <div class="summary-stat">
+                <div class="summary-stat-val">${totalAlt.toLocaleString()} m</div>
+                <div class="summary-stat-lbl">Total Elevation</div>
+              </div>
+              <div class="summary-stat">
+                <div class="summary-stat-val">${sumHours}h ${sumMins}m</div>
+                <div class="summary-stat-lbl">Total Time</div>
+              </div>
+            </div>
+          `;
+        }
+
+        const categoryOptions = isBike
+          ? `
+            <option value="Ride Day">🚴 Ride Day</option>
+            <option value="Rest Day">☕ Rest Day</option>
+            <option value="Arrival/Departure travel">✈️ Arrival/Departure travel</option>
+          `
+          : `
+            <option value="City">🏙️ City</option>
+            <option value="Hike">🥾 Hike</option>
+            <option value="Culture">🏛️ Culture</option>
+            <option value="Arrival/Departure">✈️ Arrival/Departure</option>
+          `;
+
+        const generalGpxHtml = itin.gpxFileName
+ const generalGpxHtml = itin.gpxFileName
+  ? `
+    <div class="day-gpx-badge" style="margin: 0 0 1rem 0;">
+      🗺️ General GPX attached: ${escapeHtml(itin.gpxFileName)}
+    </div>
+  `
+  : "";
+
+card.innerHTML = `
+  <div class="itinerary-card-header">
+    <h4>${escapeHtml(itin.title)}</h4>
+    <button
+      class="btn-del-item"
+      onclick="deleteItinerary(${itinIdx})"
+      title="Delete Itinerary"
+    >&times;</button>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+    <label class="gpx-file-btn">
+      <span>📁 Attach General .GPX</span>
+      <input
+        type="file"
+        accept=".gpx,application/gpx+xml"
+        style="display:none;"
+        onchange="attachItineraryGpx(event, ${itinIdx})"
+      />
+    </label>
+  </div>
+
+  ${generalGpxHtml}
+
+  <div class="days-list">${daysHtml}</div>
+
+  ${summaryBannerHtml}
+
+  <!-- Add Day Box -->
+  <div class="add-day-box">
+    <h5 style="font-size:0.85rem; color:#be123c; margin-bottom:0.5rem;">+ Add Day ${itin.days.length + 1}</h5>
+
+  <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+    <label class="gpx-file-btn">
+      <span>📁 Attach General .GPX</span>
+      <input
+        type="file"
+        accept=".gpx,application/gpx+xml"
+        style="display:none;"
+        onchange="attachItineraryGpx(event, ${itinIdx})"
+      />
+    </label>
+  </div>
+
+  ${generalGpxHtml}
+
+          <div class="days-list">${daysHtml}</div>
+
+          ${summaryBannerHtml}
+
+          <!-- Add Day Box -->
+          <div class="add-day-box">
+            <h5 style="font-size:0.85rem; color:#be123c; margin-bottom:0.5rem;">+ Add Day ${itin.days.length + 1}</h5>
+            <div class="day-form-grid">
+              <input type="text" id="day-title-${itinIdx}" class="app-input" placeholder="Title/route (e.g., Dilijan to Sevan)..." />
+              <select id="day-cat-${itinIdx}" class="day-select" onchange="onCategoryChange(${itinIdx})">${categoryOptions}</select>
+            </div>
+
+            <!-- Dynamic Metrics Row (Always visible for bikepacking, dynamic for hike in backpacking) -->
+            <div class="metrics-input-row" id="metrics-row-${itinIdx}" style="display: ${isBike ? 'grid' : 'none'};">
+              <div class="metric-field">
+                <label>Distance (km)</label>
+                <input type="number" step="0.1" id="day-km-${itinIdx}" placeholder="e.g. 45.5" />
+              </div>
+              <div class="metric-field">
+                <label>Altitude / Ascent (m)</label>
+                <input type="number" step="1" id="day-alt-${itinIdx}" placeholder="e.g. 680" />
+              </div>
+              <div class="metric-field">
+                <label>Hours</label>
+                <input type="number" min="0" id="day-hr-${itinIdx}" placeholder="e.g. 3" />
+              </div>
+              <div class="metric-field">
+                <label>Minutes</label>
+                <input type="number" min="0" max="59" id="day-min-${itinIdx}" placeholder="e.g. 30" />
+              </div>
+            </div>
+
+            <textarea id="day-notes-${itinIdx}" class="app-input" rows="2" style="width:100%; margin-bottom:0.6rem; font-size:0.85rem;" placeholder="Day notes, trail condition, accommodation, water stops..."></textarea>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+              <label class="gpx-file-btn">
+                <span>📁 Attach .GPX Track</span>
+                <input type="file" style="display:none;" accept=".gpx" onchange="attachDayGpx(event, ${itinIdx})" />
+              </label>
+              <button class="btn-pink-action" style="padding:0.45rem 1rem; font-size:0.82rem;" onclick="addDayToItin(${itinIdx})">+ Add This Day</button>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    let tempGpxData = {};
+function attachItineraryGpx(event, itinIdx) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const list = getStoredItineraries(activeFolderId);
+    const itinerary = list[itinIdx];
+
+    if (!itinerary) return;
+
+    itinerary.gpxFileName = file.name;
+    itinerary.gpxRaw = e.target.result;
+
+    saveItineraries(activeFolderId, list);
+    renderItinerariesList();
+
+    if (itinerary.gpxRaw && mapFolderDetail) {
+      plotGpxOnDetailMap(itinerary.gpxRaw);
+    }
+
+    alert(`General GPX file "${file.name}" attached to the itinerary.`);
+  };
+
+  reader.readAsText(file);
+}
+    function attachDayGpx(event, itinIdx) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        tempGpxData[itinIdx] = {
+          name: file.name,
+          raw: text
+        };
+        alert(`GPX file "${file.name}" selected! Click "+ Add This Day" to save.`);
+      };
+      reader.readAsText(file);
+    }
+
+    function addDayToItin(itinIdx) {
+      const titleInput = document.getElementById(`day-title-${itinIdx}`);
+      const catInput = document.getElementById(`day-cat-${itinIdx}`);
+      const notesInput = document.getElementById(`day-notes-${itinIdx}`);
+
+      const kmInput = document.getElementById(`day-km-${itinIdx}`);
+      const altInput = document.getElementById(`day-alt-${itinIdx}`);
+      const hrInput = document.getElementById(`day-hr-${itinIdx}`);
+      const minInput = document.getElementById(`day-min-${itinIdx}`);
+
+      const title = titleInput.value.trim() || `Stage ${Date.now()}`;
+      const category = catInput.value;
+      const notes = notesInput.value.trim();
+
+      const km = kmInput ? kmInput.value : "";
+      const altitude = altInput ? altInput.value : "";
+      const hours = hrInput ? hrInput.value : "";
+      const mins = minInput ? minInput.value : "";
+
+      const list = getStoredItineraries(activeFolderId);
+      const newDay = {
+        title,
+        category,
+        notes,
+        km,
+        altitude,
+        hours,
+        mins,
+        gpxFileName: tempGpxData[itinIdx] ? tempGpxData[itinIdx].name : null,
+        gpxRaw: tempGpxData[itinIdx] ? tempGpxData[itinIdx].raw : null
+      };
+
+      list[itinIdx].days.push(newDay);
+      saveItineraries(activeFolderId, list);
+
+      if (newDay.gpxRaw && mapFolderDetail) {
+        plotGpxOnDetailMap(newDay.gpxRaw);
+      }
+
+      delete tempGpxData[itinIdx];
+      renderItinerariesList();
+    }
+
+    function deleteDay(itinIdx, dayIdx) {
+      const list = getStoredItineraries(activeFolderId);
+      list[itinIdx].days.splice(dayIdx, 1);
+      saveItineraries(activeFolderId, list);
+      renderItinerariesList();
+    }
+
+    function plotGpxOnDetailMap(gpxText) {
+      try {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(gpxText, "text/xml");
+        const pts = xmlDoc.getElementsByTagName("trkpt");
+        const coords = [];
+
+        for (let i = 0; i < pts.length; i++) {
+          const lat = parseFloat(pts[i].getAttribute("lat"));
+          const lon = parseFloat(pts[i].getAttribute("lon"));
+          if (!isNaN(lat) && !isNaN(lon)) coords.push([lat, lon]);
+        }
+
+        if (coords.length > 0) {
+          const line = L.polyline(coords, { color: '#2563eb', weight: 4 }).addTo(mapFolderDetail);
+          gpxLayers.push(line);
+          mapFolderDetail.fitBounds(line.getBounds(), { padding: [30, 30] });
+        }
+      } catch(e) {
+        console.error("GPX parse error", e);
+      }
+    }
+
+    /* ==========================================================
+       7. NOTES & TO-DO CHECKLIST
+       ========================================================== */
+    function getStoredTodos(destId) {
+      const data = localStorage.getItem(`dorota_todos_${destId}`);
+      return data ? JSON.parse(data) : [];
+    }
+
+    function saveTodos(destId, arr) {
+      localStorage.setItem(`dorota_todos_${destId}`, JSON.stringify(arr));
+    }
+
+    function renderTodoList() {
+      const container = document.getElementById("modal-todo-list");
+      container.innerHTML = "";
+      const list = getStoredTodos(activeFolderId);
+
+      if (list.length === 0) {
+        container.innerHTML = `<span style="font-size:0.82rem; color:#94a3b8; font-style:italic;">No to-do items yet.</span>`;
+        return;
+      }
+
+      list.forEach((item, idx) => {
+        const row = document.createElement("div");
+        row.className = `todo-item ${item.done ? 'completed' : ''}`;
+        row.innerHTML = `
+          <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleTodo(${idx})" />
+          <span style="flex:1;">${escapeHtml(item.text)}</span>
+          <button class="btn-del-item" onclick="deleteTodo(${idx})" title="Remove">&times;</button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function addTodoItem() {
+      const input = document.getElementById("new-todo-input");
+      const val = input.value.trim();
+      if (!val || !activeFolderId) return;
+
+      const list = getStoredTodos(activeFolderId);
+      list.push({ text: val, done: false });
+      saveTodos(activeFolderId, list);
+      input.value = "";
+      renderTodoList();
+    }
+
+    function toggleTodo(idx) {
+      const list = getStoredTodos(activeFolderId);
+      list[idx].done = !list[idx].done;
+      saveTodos(activeFolderId, list);
+      renderTodoList();
+    }
+
+    function deleteTodo(idx) {
+      const list = getStoredTodos(activeFolderId);
+      list.splice(idx, 1);
+      saveTodos(activeFolderId, list);
+      renderTodoList();
+    }
+
+    /* Freeform Notes */
+    function getStoredNotes(destId) {
+      const data = localStorage.getItem(`dorota_notes_${destId}`);
+      return data ? JSON.parse(data) : [];
+    }
+
+    function saveNotes(destId, arr) {
+      localStorage.setItem(`dorota_notes_${destId}`, JSON.stringify(arr));
+    }
+
+    function renderNotesList() {
+      const container = document.getElementById("modal-notes-list");
+      container.innerHTML = "";
+      const list = getStoredNotes(activeFolderId);
+
+      if (list.length === 0) {
+        container.innerHTML = `<span style="font-size:0.82rem; color:#94a3b8; font-style:italic;">No notes written yet.</span>`;
+        return;
+      }
+
+      list.forEach((n, idx) => {
+        const card = document.createElement("div");
+        card.className = "note-card-item";
+        card.innerHTML = `
+          <button class="btn-del-item" style="position:absolute; top:4px; right:6px;" onclick="deleteNote(${idx})" title="Delete Note">&times;</button>
+          <p>${escapeHtml(n.text)}</p>
+          <div class="note-date">${n.date}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addNoteItem() {
+      const input = document.getElementById("new-note-input");
+      const val = input.value.trim();
+      if (!val || !activeFolderId) return;
+
+      const list = getStoredNotes(activeFolderId);
+      list.unshift({
+        text: val,
+        date: new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      });
+      saveNotes(activeFolderId, list);
+      input.value = "";
+      renderNotesList();
+    }
+
+    function deleteNote(idx) {
+      const list = getStoredNotes(activeFolderId);
+      list.splice(idx, 1);
+      saveNotes(activeFolderId, list);
+      renderNotesList();
+    }
+
+    /* ==========================================================
+       8. ADD NEW DESTINATION MODAL
+       ========================================================== */
+    let destTabTarget = "backpacking";
+
+    function openAddDestinationModal(tab) {
+      destTabTarget = tab;
+      document.getElementById("new-dest-name").value = "";
+      document.getElementById("new-dest-country").value = "";
+      document.getElementById("new-dest-desc").value = "";
+      document.getElementById("new-dest-img").value = "";
+      document.getElementById("add-dest-modal").classList.add("active");
+    }
+
+    function closeAddDestinationModal() {
+      document.getElementById("add-dest-modal").classList.remove("active");
+    }
+
+    function saveNewDestination() {
+      const name = document.getElementById("new-dest-name").value.trim();
+      const rawCountry = document.getElementById("new-dest-country").value.trim();
+      const desc = document.getElementById("new-dest-desc").value.trim();
+      const img = document.getElementById("new-dest-img").value.trim();
+
+      if (!name) {
+        alert("Please enter a destination name.");
+        return;
+      }
+
+      const id = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const all = getAllDestinations();
+
+      const countriesArr = rawCountry 
+        ? rawCountry.split(',').map(c => c.trim()).filter(Boolean)
+        : [name];
+
+      all[id] = {
+        id: id,
+        tab: destTabTarget,
+        name: name,
+        flag: "📍",
+        countries: countriesArr,
+        coordinates: [45.0 + Math.random() * 5, 10.0 + Math.random() * 10],
+        zoom: 7,
+        cover: img || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
+        description: desc || `Custom ${destTabTarget} destination in ${rawCountry || name}.`,
+        bestTime: "Spring and Autumn are typically recommended.",
+        basicInfo: `Region: ${rawCountry || name} | Created by traveler.`,
+        visaInfo: "<p>Check the latest visa regulations for German and Polish citizens before departure.</p>"
+      };
+
+      saveAllDestinations(all);
+      closeAddDestinationModal();
+      renderAllCards();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      const d = document.createElement("div");
+      d.textContent = str;
+      return d.innerHTML;
+    }
   </script>
 </body>
 </html>
+~
