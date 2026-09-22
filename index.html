@@ -1830,19 +1830,21 @@
     /* ==========================================================
        4. COVER PHOTO MODIFICATION FEATURE
        ========================================================== */
-  function handleCoverImageUpload(event) {
+function handleCoverImageUpload(event) {
   const file = event.target.files && event.target.files[0];
-  if (!file) return;
+  if (!file || !file.type.startsWith("image/")) return;
 
   const reader = new FileReader();
 
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     document.getElementById("custom-image-url-input").value = e.target.result;
 
     const fileName = document.getElementById("selected-image-file-name");
-    if (fileName) {
-      fileName.textContent = file.name;
-    }
+    if (fileName) fileName.textContent = file.name;
+  };
+
+  reader.onerror = function () {
+    alert("The selected image could not be read.");
   };
 
   reader.readAsDataURL(file);
@@ -1852,18 +1854,16 @@ function openImageEditModal() {
   if (!activeFolderId) return;
 
   const dest = getAllDestinations()[activeFolderId];
-  const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
+  const currCover =
+    localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
+
   document.getElementById("custom-image-url-input").value = currCover;
 
   const selectedFileName = document.getElementById("selected-image-file-name");
-  if (selectedFileName) {
-    selectedFileName.textContent = "";
-  }
+  if (selectedFileName) selectedFileName.textContent = "";
 
   const imageFileInput = document.getElementById("custom-image-file-input");
-  if (imageFileInput) {
-    imageFileInput.value = "";
-  }
+  if (imageFileInput) imageFileInput.value = "";
 
   const presetBox = document.getElementById("preset-photos-container");
   presetBox.innerHTML = "";
@@ -1886,24 +1886,52 @@ function openImageEditModal() {
   document.getElementById("image-edit-modal").classList.add("active");
 }
 
-    function closeImageEditModal() {
-      document.getElementById("image-edit-modal").classList.remove("active");
-    }
+function closeImageEditModal() {
+  document.getElementById("image-edit-modal").classList.remove("active");
+}
 
-    function applyCustomCoverPhoto() {
-      if (!activeFolderId) return;
-      const url = document.getElementById("custom-image-url-input").value.trim();
-      if (!url) return;
+function applyCustomCoverPhoto() {
+  if (!activeFolderId) return;
 
+  const input = document.getElementById("custom-image-url-input");
+  const url = input.value.trim();
+
+  if (!url) {
+    alert("Paste an image URL or choose an image file first.");
+    return;
+  }
+
+  const image = new Image();
+
+  image.onload = function () {
+    try {
       localStorage.setItem(`dorota_cover_${activeFolderId}`, url);
-      document.getElementById("modal-img").src = url;
 
-      const cardImg = document.getElementById(`card-cover-${activeFolderId}`);
-      if (cardImg) cardImg.src = url;
+      const modalImage = document.getElementById("modal-img");
+      if (modalImage) modalImage.src = url;
+
+      const cardImage = document.getElementById(`card-cover-${activeFolderId}`);
+      if (cardImage) cardImage.src = url;
 
       closeImageEditModal();
+    } catch (error) {
+      if (error.name === "QuotaExceededError") {
+        alert(
+          "This image is too large to save in the browser. Please choose a smaller image."
+        );
+      } else {
+        alert("The picture could not be saved.");
+        console.error(error);
+      }
     }
+  };
 
+  image.onerror = function () {
+    alert("That does not appear to be a valid image URL or image file.");
+  };
+
+  image.src = url;
+}
     /* ==========================================================
        5. THINGS TO SEE & PERSONAL ROUTE BUILDER
        ========================================================== */
@@ -2294,30 +2322,59 @@ card.innerHTML = `
       });
     }
 
-    let tempGpxData = {};
+let tempGpxData = {};
+
 function attachItineraryGpx(event, itinIdx) {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
 
+  const isGpx =
+    file.name.toLowerCase().endsWith(".gpx") ||
+    file.type === "application/gpx+xml" ||
+    file.type === "application/xml" ||
+    file.type === "text/xml";
+
+  if (!isGpx) {
+    alert("Please choose a GPX file.");
+    event.target.value = "";
+    return;
+  }
+
   const reader = new FileReader();
 
-  reader.onload = function(e) {
-    const list = getStoredItineraries(activeFolderId);
-    const itinerary = list[itinIdx];
+  reader.onload = function (e) {
+    try {
+      const list = getStoredItineraries(activeFolderId);
+      const itinerary = list[itinIdx];
 
-    if (!itinerary) return;
+      if (!itinerary) {
+        alert("The itinerary could not be found.");
+        return;
+      }
 
-    itinerary.gpxFileName = file.name;
-    itinerary.gpxRaw = e.target.result;
+      itinerary.gpxFileName = file.name;
+      itinerary.gpxRaw = e.target.result;
 
-    saveItineraries(activeFolderId, list);
-    renderItinerariesList();
+      saveItineraries(activeFolderId, list);
+      renderItinerariesList();
 
-    if (itinerary.gpxRaw && mapFolderDetail) {
-      plotGpxOnDetailMap(itinerary.gpxRaw);
+      if (itinerary.gpxRaw && mapFolderDetail) {
+        plotGpxOnDetailMap(itinerary.gpxRaw);
+      }
+
+      alert(`GPX file "${file.name}" attached to the itinerary.`);
+    } catch (error) {
+      if (error.name === "QuotaExceededError") {
+        alert("There is not enough browser storage available for this GPX file.");
+      } else {
+        alert("The GPX file could not be saved.");
+        console.error(error);
+      }
     }
+  };
 
-    alert(`General GPX file "${file.name}" attached to the itinerary.`);
+  reader.onerror = function () {
+    alert("The GPX file could not be read.");
   };
 
   reader.readAsText(file);
