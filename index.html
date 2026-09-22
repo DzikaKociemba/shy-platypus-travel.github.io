@@ -1852,7 +1852,7 @@
       const dest = getAllDestinations()[activeFolderId];
       const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
       document.getElementById("custom-image-url-input").value = currCover;
-      onst selectedFileName = document.getElementById("selected-image-file-name");
+      const selectedFileName = document.getElementById("selected-image-file-name");
 if (selectedFileName) {
   selectedFileName.textContent = "";
 }
