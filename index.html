@@ -6,7 +6,7 @@
   <title>Travel ideas</title>
 
   <!-- Leaflet CSS for OpenStreetMap (No API Key Required) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 
   <style>
     :root {
@@ -1297,13 +1297,13 @@
       <!-- Option A: Upload from Computer -->
       <label class="gpx-file-btn" style="width:100%; padding:0.65rem; margin-bottom:0.4rem; cursor:pointer;">
         <span>📁 Choose Photo from Computer</span>
-        <input type="file" id="local-cover-file-input" style="display:none;" accept="image/*" onchange="handleLocalCoverUpload(event)" />
+        <input type="file" id="local-cover-file-input" style="display:none;" accept="image/*" />
       </label>
 
       <div class="upload-option-divider">OR PASTE URL</div>
 
       <!-- Option B: Paste URL -->
-      <input type="text" id="custom-image-url-input" class="app-input" placeholder="Paste image link here (e.g. https://images.unsplash.com/...)" style="width:100%; margin-bottom:0.8rem;" />
+      <input type="text" id="custom-image-url-input" class="app-input" placeholder="Paste image link here (e.g. https://images.unsplash.com/...)" style="width:100%; margin-bottom:0.8rem;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
 
       <label style="font-size:0.8rem; font-weight:700; color:#475569;">Or pick a recommended landmark:</label>
       <div class="preset-photos" id="preset-photos-container"></div>
@@ -1316,7 +1316,7 @@
   </div>
 
   <!-- Leaflet Maps Script -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
     /* 1. CORE DATA STORE */
@@ -1564,6 +1564,12 @@
     document.addEventListener("DOMContentLoaded", () => {
       renderAllCards();
       initBackpackingMap();
+
+      // Reliable File Upload Listener for Cover Photo
+      const coverInput = document.getElementById("local-cover-file-input");
+      if (coverInput) {
+        coverInput.addEventListener("change", handleLocalCoverUpload);
+      }
     });
 
     function switchSection(tab) {
@@ -1832,7 +1838,7 @@
       if (!activeFolderId) return;
       const dest = getAllDestinations()[activeFolderId];
       const currCover = localStorage.getItem(`dorota_cover_${activeFolderId}`) || dest.cover;
-      
+
       const urlInput = document.getElementById("custom-image-url-input");
       urlInput.value = currCover.startsWith("data:") ? "" : currCover;
 
@@ -1854,7 +1860,12 @@
         presetBox.appendChild(img);
       });
 
+      // Clear any previous file selection
+      const fileInput = document.getElementById("local-cover-file-input");
+      if (fileInput) fileInput.value = "";
+
       document.getElementById("image-edit-modal").classList.add("active");
+      setTimeout(() => { urlInput.focus(); }, 150);
     }
 
     function closeImageEditModal() {
@@ -1869,6 +1880,9 @@
       reader.onload = function(e) {
         const base64Img = e.target.result;
         saveAndApplyCover(base64Img);
+      };
+      reader.onerror = function() {
+        alert("Failed to read image file. Please try another file.");
       };
       reader.readAsDataURL(file);
     }
@@ -1889,9 +1903,12 @@
       } catch(e) {
         console.warn("Storage quota warning for large image, updating memory only.", e);
       }
-      document.getElementById("modal-img").src = imgSrc;
+      const bannerImg = document.getElementById("modal-img");
+      if (bannerImg) bannerImg.src = imgSrc;
+
       const cardImg = document.getElementById(`card-cover-${activeFolderId}`);
       if (cardImg) cardImg.src = imgSrc;
+
       closeImageEditModal();
     }
 
@@ -2061,23 +2078,32 @@
 
     function uploadMasterItineraryGpx(event, itinIdx) {
       const file = event.target.files[0];
-      if (!file) return;
+      if (!file || !activeFolderId) return;
 
       const reader = new FileReader();
       reader.onload = function(e) {
         const text = e.target.result;
         const list = getStoredItineraries(activeFolderId);
+        if (!list[itinIdx]) return;
+
         list[itinIdx].masterGpxName = file.name;
         list[itinIdx].masterGpxRaw = text;
         saveItineraries(activeFolderId, list);
+
         renderItinerariesList();
         renderAllItinGpxOnMap();
+      };
+      reader.onerror = function() {
+        alert("Failed to read the selected GPX file.");
       };
       reader.readAsText(file);
     }
 
     function removeMasterItineraryGpx(itinIdx) {
+      if (!activeFolderId) return;
       const list = getStoredItineraries(activeFolderId);
+      if (!list[itinIdx]) return;
+
       list[itinIdx].masterGpxName = null;
       list[itinIdx].masterGpxRaw = null;
       saveItineraries(activeFolderId, list);
@@ -2259,7 +2285,7 @@
 
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
               <label class="gpx-file-btn">
-                <span>📁 Attach Day .GPX Track</span>
+                <span id="day-gpx-btn-label-${itinIdx}">📁 Attach Day .GPX Track</span>
                 <input type="file" style="display:none;" accept=".gpx" onchange="attachDayGpx(event, ${itinIdx})" />
               </label>
               <button class="btn-pink-action" style="padding:0.45rem 1rem; font-size:0.82rem;" onclick="addDayToItin(${itinIdx})">+ Add This Day</button>
@@ -2284,7 +2310,13 @@
           name: file.name,
           raw: text
         };
-        alert(`GPX file "${file.name}" selected! Click "+ Add This Day" to save.`);
+        const labelSpan = document.getElementById(`day-gpx-btn-label-${itinIdx}`);
+        if (labelSpan) {
+          labelSpan.innerHTML = `✅ Attached: ${escapeHtml(file.name)}`;
+        }
+      };
+      reader.onerror = function() {
+        alert("Failed to read the day GPX file.");
       };
       reader.readAsText(file);
     }
@@ -2386,7 +2418,12 @@
       try {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(gpxText, "text/xml");
-        const pts = xmlDoc.getElementsByTagName("trkpt");
+
+        // Collect both track points (<trkpt>) and route points (<rtept>)
+        let pts = xmlDoc.getElementsByTagName("trkpt");
+        if (!pts || pts.length === 0) {
+          pts = xmlDoc.getElementsByTagName("rtept");
+        }
 
         for (let i = 0; i < pts.length; i++) {
           const lat = parseFloat(pts[i].getAttribute("lat"));
